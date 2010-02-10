@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>FotoliaAPI</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.adobe.flexbuilder.project.flexbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.adobe.flexbuilder.project.flexlibnature</nature>
+		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>[source path] as3-rpclib-src</name>
+			<type>2</type>
+			<location>C:/as3/as3-rpclib/src</location>
+		</link>
+		<link>
+			<name>[source path] as3corelib-src</name>
+			<type>2</type>
+			<location>C:/as3/as3corelib/src</location>
+		</link>
+		<link>
+			<name>[source path] as3syndicationlib-src</name>
+			<type>2</type>
+			<location>C:/as3/as3syndicationlib/src</location>
+		</link>
+		<link>
+			<name>[source path] robertpenner-as3-signals-src</name>
+			<type>2</type>
+			<location>C:/as3/robertpenner-as3-signals/src</location>
+		</link>
+	</linkedResources>
+</projectDescription>
