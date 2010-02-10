@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" version="3">
+  <includeClasses>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaService"/>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaServiceRequest"/>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaUser"/>
+    <classEntry path="net.tw.webapis.fotolia.util.DataParser"/>
+    <classEntry path="net.tw.webapis.fotolia.abstract.AbstractFotoliaGallery"/>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaGallery"/>
+    <classEntry path="net.tw.webapis.fotolia.abstract.FotoliaServiceRequester"/>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaCategory"/>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaUserGallery"/>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaSearchResults"/>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaMedia"/>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaShoppingCart"/>
+    <classEntry path="net.tw.webapis.fotolia.FotoliaCartMedia"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
