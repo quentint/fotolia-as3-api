@@ -8,9 +8,9 @@ package net.tw.webapis.fotolia {
 	public class FotoliaUserGallery extends AbstractFotoliaGallery {
 		protected var _user:FotoliaUser;
 		//
-		protected var _disposed:Signal=new Signal(Boolean);
-		protected var _addedMedia:Signal=new Signal(Boolean);
-		protected var _removedMedia:Signal=new Signal(Boolean);
+		protected var _disposed:Signal=new Signal(FotoliaUserGallery);
+		protected var _addedMedia:Signal=new Signal(FotoliaUserGallery);
+		protected var _removedMedia:Signal=new Signal(FotoliaUserGallery);
 		//
 		public static const METHOD_DELETE_USER_GALLERY:String='xmlrpc.deleteUserGallery';
 		public static const METHOD_ADD_TO_USER_GALLERY:String='xmlrpc.addToUserGallery';
@@ -44,7 +44,7 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Signal dispatched after a dispose call.
-		 * Listeners will receive 1 argument: a Boolean (true)
+		 * Listeners will receive 1 argument: the target FotoliaUserGallery.
 		 * @see #dispose()
 		 */
 		public function get disposed():Signal {
@@ -60,12 +60,13 @@ package net.tw.webapis.fotolia {
 				METHOD_DELETE_USER_GALLERY,
 				[key, user.sessionID, id],
 				disposed,
-				DataParser.successStringObjectToBoolean
+				DataParser.targetHandler,
+				[this]
 			);
 		}
 		/**
 		 * Signal dispatched after an addMedia call.
-		 * Listeners will receive 1 argument: a Boolean (true)
+		 * Listeners will receive 1 argument: the target FotoliaUserGallery.
 		 * @see #addMedia
 		 */
 		public function get addedMedia():Signal {
@@ -82,12 +83,13 @@ package net.tw.webapis.fotolia {
 				METHOD_ADD_TO_USER_GALLERY,
 				[key, user.sessionID, mediaID, id],
 				addedMedia,
-				DataParser.successStringObjectToBoolean
+				DataParser.targetHandler,
+				[this]
 			);
 		}
 		/**
 		 * Signal dispatched after a removeMedia call.
-		 * Listeners will receive 1 argument: a Boolean (true)
+		 * Listeners will receive 1 argument: the target FotoliaUserGallery.
 		 * @see #removeMedia
 		 */
 		public function get removedMedia():Signal {
@@ -104,7 +106,8 @@ package net.tw.webapis.fotolia {
 				METHOD_REMOVE_FROM_USER_GALLERY,
 				[key, user.sessionID, mediaID, id],
 				removedMedia,
-				DataParser.successStringObjectToBoolean
+				DataParser.targetHandler,
+				[this]
 			);
 		}
 	}

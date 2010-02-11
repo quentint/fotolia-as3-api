@@ -10,8 +10,8 @@ package net.tw.webapis.fotolia {
 		protected var _internalGotData:Signal=new Signal(Object);
 		protected var _gotData:Signal=new Signal(FotoliaMedia);
 		//protected var _gotGalleries:Signal=new Signal(Array);
-		protected var _gotComp:Signal=new Signal(Object);
-		protected var _purchased:Signal=new Signal(String);
+		protected var _gotComp:Signal=new Signal(Object, FotoliaMedia);
+		protected var _purchased:Signal=new Signal(String, FotoliaMedia);
 		//
 		public static const SIZE_SMALL:uint=30;
 		public static const SIZE_MEDIUM:uint=110;
@@ -71,7 +71,7 @@ package net.tw.webapis.fotolia {
 		}*/
 		/**
 		 * Signal dispacthed after a getComp call.
-		 * Listeners will receive 1 argument: an Object with url (String), width (uint) and height (uint) properties.
+		 * Listeners will receive 2 arguments: an Object (with url:String, width:uint and height:uint properties), and the target FotoliaMedia.
 		 */
 		public function get gotComp():Signal {
 			return _gotComp;
@@ -85,12 +85,14 @@ package net.tw.webapis.fotolia {
 			loadRequest(
 				METHOD_GET_MEDIA_COMP,
 				[key, id],
-				gotComp
+				gotComp,
+				DataParser.rawObjectTargetHandler,
+				[this]
 			);
 		}
 		/**
 		 * Signal dispatched after a purchse call.
-		 * Listeners will receive 1 argument: a String, the download URL.
+		 * Listeners will receive 2 arguments: a String (the download URL) and the target FotoliaMedia.
 		 * @see #purchase()
 		 */
 		public function get purchased():Signal {
@@ -108,7 +110,8 @@ package net.tw.webapis.fotolia {
 				METHOD_GET_MEDIA,
 				[key, sessionID, id, licenceName],
 				purchased,
-				DataParser.firstObjectItemToObject
+				DataParser.purchaseHandler,
+				[this]
 			);
 		}
 		/**

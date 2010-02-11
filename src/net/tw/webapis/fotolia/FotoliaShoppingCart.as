@@ -10,12 +10,12 @@ package net.tw.webapis.fotolia {
 		protected var _medias:Array;
 		//
 		protected var _internalGotList:Signal=new Signal();
-		protected var _gotList:Signal=new Signal(Array);
-		protected var _addedMedia:Signal=new Signal();
-		protected var _removedMedia:Signal=new Signal();
+		protected var _gotList:Signal=new Signal(Array, FotoliaShoppingCart);
+		protected var _addedMedia:Signal=new Signal(FotoliaShoppingCart);
+		protected var _removedMedia:Signal=new Signal(FotoliaShoppingCart);
 		protected var _internalCleared:Signal=new Signal();
-		protected var _cleared:Signal=new Signal();
-		protected var _transferedToLightBox:Signal=new Signal();
+		protected var _cleared:Signal=new Signal(FotoliaShoppingCart);
+		protected var _transferedToLightBox:Signal=new Signal(FotoliaShoppingCart);
 		//
 		public static const METHOD_SHOPPING_CART_GET_LIST:String='shoppingcart.getList';
 		public static const METHOD_SHOPPING_CART_ADD:String='shoppingcart.add';
@@ -38,8 +38,8 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Signal dispatched after a getList call.
-		 * Listeners will receive 1 argument: an Array of FotoliaCartMedia.
-		 * This Array will then be available throught the medias property.
+		 * Listeners will receive 2 arguments: an Array of FotoliaCartMedia and the target FotoliaShoppingCart.
+		 * The FotoliaCartMedia Array will then be available throught the medias property.
 		 * @see FotoliaCartMedia
 		 * @see #getList()
 		 * @see #medias
@@ -66,7 +66,7 @@ package net.tw.webapis.fotolia {
 			for (var id:String in contents) {
 				_medias.push(new FotoliaCartMedia(_service, {id:uint(id)}, contents[id]));
 			}
-			gotList.dispatch(_medias);
+			gotList.dispatch(_medias, this);
 		}
 		/**
 		 * Fetched shopping cart medias.
@@ -78,7 +78,7 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Signal dispatched after an addMedia call.
-		 * Listeners will not receive any argument.
+		 * Listeners will receive 1 argument: the target FotoliaShoppingCart.
 		 * @see #addMedia()
 		 */
 		public function get addedMedia():Signal {
@@ -95,12 +95,14 @@ package net.tw.webapis.fotolia {
 			loadRequest(
 				METHOD_SHOPPING_CART_ADD,
 				[key, user.sessionID, mediaID, licenceName],
-				addedMedia
+				addedMedia,
+				DataParser.targetHandler,
+				[this]
 			);
 		}
 		/**
 		 * Signal dispatched after a removeMedia call.
-		 * Listeners will not receive any argument.
+		 * Listeners will receive 1 argument: the target FotoliaShoppingCart.
 		 * @see #removeMedia()
 		 */
 		public function get removedMedia():Signal {
@@ -121,12 +123,14 @@ package net.tw.webapis.fotolia {
 			loadRequest(
 				METHOD_SHOPPING_CART_REMOVE,
 				[key, user.sessionID, mediaID],
-				removedMedia
+				removedMedia,
+				DataParser.targetHandler,
+				[this]
 			);
 		}
 		/**
 		 * Signal dispatched after a clear call.
-		 * Listeners will not receive any arguments.
+		 * Listeners will receive 1 argument: the target FotoliaShoppingCart.
 		 * @see #clear()
 		 */
 		public function get cleared():Signal {
@@ -147,11 +151,11 @@ package net.tw.webapis.fotolia {
 		}
 		protected function onCleared(o:Object):void {
 			_medias=[];
-			cleared.dispatch();
+			cleared.dispatch(this);
 		}
 		/**
 		 * Signal dispatched after a transferToLightbox call.
-		 * Listeners will not receive any argument.
+		 * Listeners will receive 1 argument: the target FotoliaShoppingCart.
 		 * @see #transferToLightbox()
 		 */
 		public function get transferedToLightbox():Signal {
@@ -172,7 +176,9 @@ package net.tw.webapis.fotolia {
 			loadRequest(
 				METHOD_SHOPPING_CART_TRANSFER_TO_LIGHTBOX,
 				[key, user.sessionID, mediaID],
-				transferedToLightbox
+				transferedToLightbox,
+				DataParser.targetHandler,
+				[this]
 			);
 		}
 	}
