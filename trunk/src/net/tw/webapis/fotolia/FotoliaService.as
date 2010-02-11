@@ -76,7 +76,7 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Signal dispatched when a remote call faults.
-		 * Listeners will receive 3 arguments: the faultString, the FaultEvent and the call arguments Array
+		 * Listeners will receive 3 arguments: the method called (String), the FaultEvent and the call arguments Array
 		 */
 		public function get faulted():Signal {
 			return _faulted;

@@ -48,16 +48,16 @@ package net.tw.webapis.fotolia.util {
 			}
 			return gs;
 		}
-		public static function arrayToUserGalleries(a:Array, params:Array):Array {
+		public static function arrayToUserGalleries(a:Array, params:Array):Object {
 			var gs:Array=[];
 			for each (var item:Object in a) {
 				gs.push(new FotoliaUserGallery(params[0], item, params[1]));
 			}
-			return gs;
+			return {res:gs, target:params[1]};
 		}
-		public static function createdGalleryToUserGallery(o:Object, params:Array):FotoliaUserGallery {
+		public static function createdGalleryToUserGallery(o:Object, params:Array):Object {
 			o.name=params[2];
-			return new FotoliaUserGallery(params[0], o, params[1]);
+			return {res:new FotoliaUserGallery(params[0], o, params[1]), target:params[1]};
 		}
 		public static function successStringObjectToBoolean(o:Object):Boolean {
 			for each(var item:* in o) return item=='SUCCESS';
@@ -78,5 +78,17 @@ package net.tw.webapis.fotolia.util {
 			}
 			return new FotoliaSearchResults(o.nb_results, medias);
 		}
+		public static function rawObjectTargetHandler(o:Object, params:Array):Object {
+			return {res:o, target:params[0]};
+		}
+		public static function targetHandler(o:Object, params:Array):Object {
+			return {target:params[0]};
+		}
+		public static function purchaseHandler(o:Object, params:Array):Object {
+			return {res:firstObjectItemToObject(o), target:params[0]};
+		}
+		/*public static function targetSuccessStringObjectToBoolean(o:Object, params:Array):Object {
+			return {res:successStringObjectToBoolean(o), target:params[0]};
+		}*/
 	}
 }

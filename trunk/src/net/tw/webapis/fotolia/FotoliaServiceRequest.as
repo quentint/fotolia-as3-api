@@ -41,8 +41,13 @@ package net.tw.webapis.fotolia {
 		protected function onCallRes(e:ResultEvent):void {
 			removeListeners();
 			if (_parser!=null) {
-				if (_parserParams) _resultSignal.dispatch(_parser(e.result, _parserParams));
-				else _resultSignal.dispatch(_parser(e.result));
+				var toDispatch:Object=_parserParams ? _parser(e.result, _parserParams) : _parser(e.result);
+				// We provide the (optional) ability to dispatch more than 1 argument, if what we get from the parser is an object with a 'res' and a 'target' properties
+				if (toDispatch.hasOwnProperty('target')) {
+					if (toDispatch.hasOwnProperty('res')) _resultSignal.dispatch(toDispatch.res, toDispatch.target);
+					else _resultSignal.dispatch(toDispatch.target);
+				}
+				else _resultSignal.dispatch(toDispatch);
 			} else {
 				_resultSignal.dispatch(e.result);
 			}

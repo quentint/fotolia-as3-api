@@ -12,9 +12,9 @@ package net.tw.webapis.fotolia {
 		//
 		protected var _shoppingCart:FotoliaShoppingCart;
 		//
-		protected var _loggedOut:Signal=new Signal(Boolean);
-		protected var _gotGalleries:Signal=new Signal(Array);
-		protected var _createdGallery:Signal=new Signal(FotoliaUserGallery);
+		protected var _loggedOut:Signal=new Signal(FotoliaUser);
+		protected var _gotGalleries:Signal=new Signal(Array, FotoliaUser);
+		protected var _createdGallery:Signal=new Signal(FotoliaUserGallery, FotoliaUser);
 		protected var _internalGotData:Signal=new Signal();
 		protected var _gotData:Signal=new Signal(FotoliaUser);
 		protected var _internalGotStats:Signal=new Signal();
@@ -33,8 +33,6 @@ package net.tw.webapis.fotolia {
 		 */
 		public function FotoliaUser(pService:FotoliaService, pSessionID:String, pLogin:String=null, pPass:String=null) {
 			super(pService);
-			//
-			_shoppingCart=new FotoliaShoppingCart(pService, this);
 			//
 			_sessionID=pSessionID;
 			_login=pLogin;
@@ -162,11 +160,12 @@ package net.tw.webapis.fotolia {
 		 * @see FotoliaShoppingCart
 		 */
 		public function get shoppingCart():FotoliaShoppingCart {
+			if (!_shoppingCart) _shoppingCart=new FotoliaShoppingCart(_service, this);
 			return _shoppingCart;
 		}
 		/**
 		 * Signal dispatched after a logOut call.
-		 * Listeners will receive 1 argument: a Boolean (true).
+		 * Listeners will receive 1 argument: the target FotoliaUser.
 		 * @see #logOut()
 		 */
 		public function get loggedOut():Signal {
@@ -182,12 +181,13 @@ package net.tw.webapis.fotolia {
 				METHOD_LOGOUT_USER,
 				[key, sessionID],
 				loggedOut,
-				DataParser.firstObjectItemToBoolean
+				DataParser.targetHandler,
+				[this]
 			);
 		}
 		/**
 		 * Signal dispatched after a getGalleries call.
-		 * Listeners will receive 1 argument: an Array of FotoliaUserGallery objects.
+		 * Listeners will receive 2 arguments: an Array of FotoliaUserGallery objects and the target FotoliaUser.
 		 * @see #getGalleries()
 		 */
 		public function get gotGalleries():Signal {
@@ -209,7 +209,7 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Signal dispatched after a createGallery call.
-		 * Listeners will receive 1 argument: a FotoliaUserGallery.
+		 * Listeners will receive 2 arguments: the newly created FotoliaUserGallery and the target FotoliaUser.
 		 * @see #createGallery()
 		 */
 		public function get createdGallery():Signal {
