@@ -55,7 +55,7 @@ package net.tw.webapis.fotolia.abstract {
 		public function getMedias(params:Object=null):void {
 			if (!params) params={};
 			params.gallery_id=id;
-			params.language_id=_service.defLang(params.language_id);
+			params.language_id=_service.autoPickLang(params.language_id);
 			//
 			loadRequest(
 				FotoliaService.METHOD_GET_SEARCH_RESULTS,

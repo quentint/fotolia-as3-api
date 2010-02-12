@@ -19,9 +19,12 @@ package net.tw.webapis.fotolia {
 		protected var _parser:Function;
 		protected var _parserParams:Array;
 		//
+		public static const ENDPOINT:String='http://api.fotolia.com/';
+		public static const DESTINATION:String='Xmlrpc/rpc';
+		//
 		public function FotoliaServiceRequest(pService:FotoliaService, pMethod:String, pArgs:Array, pResultSignal:Signal, pParser:Function=null, pParserParams:Array=null) {
-			endpoint='http://api.fotolia.com/';
-			destination='Xmlrpc/rpc';
+			endpoint=ENDPOINT;
+			destination=DESTINATION;
 			//
 			_service=pService;
 			_method=pMethod;

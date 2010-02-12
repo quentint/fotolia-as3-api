@@ -25,6 +25,7 @@ package net.tw.webapis.fotolia.abstract {
 		}
 		protected function loadRequest(method:String, args:Array, resultSignal:Signal, parser:Function=null, parserParams:Array=null):FotoliaServiceRequest {
 			var fsReq:FotoliaServiceRequest=new FotoliaServiceRequest(_service, method, args, resultSignal, parser, parserParams);
+			fsReq.showBusyCursor=_service.showBusyCursor;
 			fsReq.load();
 			return fsReq;
 		}

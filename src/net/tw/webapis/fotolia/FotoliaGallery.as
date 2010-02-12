@@ -25,5 +25,11 @@ package net.tw.webapis.fotolia {
 		public function get thumbnailSize():Point {
 			return new Point(props.thumbnail_width, props.thumbnail_height);
 		}
+		/**
+		 * Gallery's URL on Fotolia's site.
+		 */
+		public function get url():String {
+			return FotoliaService.BASE_URL+'Galleries/'+id;
+		}
 	}
 }
