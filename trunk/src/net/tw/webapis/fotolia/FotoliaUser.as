@@ -10,6 +10,9 @@ package net.tw.webapis.fotolia {
 		protected var _login:String;
 		protected var _pass:String;
 		//
+		protected var _dataFetched:Boolean=false;
+		protected var _statsFetched:Boolean=false;
+		//
 		protected var _shoppingCart:FotoliaShoppingCart;
 		//
 		protected var _loggedOut:Signal=new Signal(FotoliaUser);
@@ -28,8 +31,8 @@ package net.tw.webapis.fotolia {
 		/**
 		 * @param	pService	Used for its API key and fault handler
 		 * @param	pSessionID	User session ID
-		 * @param	pLogin		Only used for storage
-		 * @param	pPass		Only used for storage
+		 * @param	pLogin		Allows you to store the user's login
+		 * @param	pPass		Allows you to store the user's password
 		 */
 		public function FotoliaUser(pService:FotoliaService, pSessionID:String, pLogin:String=null, pPass:String=null) {
 			super(pService);
@@ -39,6 +42,18 @@ package net.tw.webapis.fotolia {
 			_pass=pPass;
 		}
 		/**
+		 * Will be true if a successful call to getData was made.
+		 */
+		public function get dataFetched():Boolean {
+			return _dataFetched;
+		}
+		/**
+		 * Will be true if a successful call to getStats was made.
+		 */
+		public function get statsFetched():Boolean {
+			return _statsFetched;
+		}
+		/**
 		 * User's session ID.
 		 * Used by all user specific methods.
 		 */
@@ -46,7 +61,7 @@ package net.tw.webapis.fotolia {
 			return _sessionID;
 		}
 		/**
-		 * Simple placeholder, only used for storage.
+		 * Simple placeholder, used to store user's login.
 		 */
 		public function get login():String {
 			return _login;
@@ -55,7 +70,7 @@ package net.tw.webapis.fotolia {
 			_login=s;
 		}
 		/**
-		 * Simple placeholder, only used for storage.
+		 * Simple placeholder, used to store user's password.
 		 */
 		public function get pass():String {
 			return _pass;
@@ -254,6 +269,7 @@ package net.tw.webapis.fotolia {
 		}
 		protected function onGotData(o:Object):void {
 			mergeProps(o);
+			_dataFetched=true;
 			gotData.dispatch(this);
 		}
 		/**
@@ -280,6 +296,7 @@ package net.tw.webapis.fotolia {
 		}
 		protected function onGotStats(o:Object):void {
 			mergeProps(o);
+			_statsFetched=true;
 			gotStats.dispatch(this);
 		}
 	}
