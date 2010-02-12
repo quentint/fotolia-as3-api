@@ -13,6 +13,8 @@ package net.tw.webapis.fotolia {
 		protected var _gotComp:Signal=new Signal(Object, FotoliaMedia);
 		protected var _purchased:Signal=new Signal(String, FotoliaMedia);
 		//
+		protected var _dataFetched:Boolean=false;
+		//
 		public static const SIZE_SMALL:uint=30;
 		public static const SIZE_MEDIUM:uint=110;
 		public static const SIZE_LARGE:uint=400;
@@ -70,7 +72,14 @@ package net.tw.webapis.fotolia {
 			o.licenses=licenses;
 			//
 			mergeProps(o);
+			_dataFetched=true;
 			gotData.dispatch(this);
+		}
+		/**
+		 * Will be true if a successful call to getData was made.
+		 */
+		public function get dataFetched():Boolean {
+			return _dataFetched;
 		}
 		/*public function get gotGalleries():Signal {
 			return _gotGalleries;
