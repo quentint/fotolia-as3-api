@@ -9,7 +9,7 @@ package net.tw.webapis.fotolia {
 	public class FotoliaMedia extends FotoliaServiceRequester {
 		protected var _internalGotData:Signal=new Signal(Object);
 		protected var _gotData:Signal=new Signal(FotoliaMedia);
-		//protected var _gotGalleries:Signal=new Signal(Array);
+		protected var _gotGalleries:Signal=new Signal(Array, FotoliaMedia);
 		protected var _gotComp:Signal=new Signal(Object, FotoliaMedia);
 		protected var _purchased:Signal=new Signal(String, FotoliaMedia);
 		//
@@ -22,14 +22,27 @@ package net.tw.webapis.fotolia {
 		public static const TYPE_PHOTO:uint=1;
 		public static const TYPE_ILLUSTRATION:uint=2;
 		public static const TYPE_VECTOR:uint=3;
+		public static const TYPE_VIDEO:uint=4;
 		//
+		/*
+		V_HD720 = 40
+		V_M = 20
+		V_NTSC = 30
+		V_S = 10
+		*/
+		public static const LICENSE_XS:String='XS';
+		public static const LICENSE_S:String='S';
 		public static const LICENSE_L:String='L';
 		public static const LICENSE_XL:String='XL';
 		public static const LICENSE_XXL:String='XXL';
+		//
+		public static const LICENSE_V:String='V';
+		public static const LICENSE_XV:String='XV';
+		//
 		public static const LICENSE_X:String='X';
 		//
 		public static const METHOD_GET_MEDIA_DATA:String='xmlrpc.getMediaData';
-		//public static const METHOD_GET_MEDIA_GALLERIES:String='xmlrpc.getMediaGalleries';
+		public static const METHOD_GET_MEDIA_GALLERIES:String='xmlrpc.getMediaGalleries';
 		public static const METHOD_GET_MEDIA_COMP:String='xmlrpc.getMediaComp';
 		public static const METHOD_GET_MEDIA:String='xmlrpc.getMedia';
 		/**
@@ -81,18 +94,27 @@ package net.tw.webapis.fotolia {
 		public function get dataFetched():Boolean {
 			return _dataFetched;
 		}
-		/*public function get gotGalleries():Signal {
+		/**
+		 * Signal dispacthed after a getGalleries call.
+		 * Listeners will receive 2 arguments: an Array of FotoliaGallery objects, and the target FotoliaMedia.
+		 * @see #getGalleries()
+		 */
+		public function get gotGalleries():Signal {
 			return _gotGalleries;
 		}
+		/**
+		 * Remote getGalleries call.
+		 * @see #gotGalleries
+		 */
 		public function getGalleries(langID:uint=0, pThumbnailSize:uint=110):void {
 			loadRequest(
 				METHOD_GET_MEDIA_GALLERIES,
-				[key, id, _service.defLang(langID), pThumbnailSize],
+				[key, id, _service.autoPickLang(langID), pThumbnailSize],
 				gotGalleries,
-				DataParser.traceObject,
-				[_service]
+				DataParser.arrayToGalleries,
+				[_service, this]
 			);
-		}*/
+		}
 		/**
 		 * Signal dispacthed after a getComp call.
 		 * Listeners will receive 2 arguments: an Object (with url:String, width:uint and height:uint properties), and the target FotoliaMedia.
@@ -192,6 +214,7 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Media's available licenses, requires a getData call for a FotoliaCartMedia.
+		 * The Object has as many properties as available licenses for this media, their name will be the license name and their value will be the price of that license.
 		 * @see #getData()
 		 * @see FotoliaCartMedia
 		 */
@@ -328,6 +351,13 @@ package net.tw.webapis.fotolia {
 		 */
 		public function isVector():Boolean {
 			return typeID==TYPE_VECTOR;
+		}
+		/**
+		 * Indicates if this media is a video.
+		 * @see #TYPE_VIDEO
+		 */
+		public function isVideo():Boolean {
+			return typeID==TYPE_VIDEO;
 		}
 	}
 }

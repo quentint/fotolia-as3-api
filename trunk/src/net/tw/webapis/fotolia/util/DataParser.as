@@ -1,6 +1,6 @@
 package net.tw.webapis.fotolia.util {
 	import net.tw.webapis.fotolia.*;
-	//import mx.utils.ObjectUtil;
+	import mx.utils.ObjectUtil;
 	/**
 	 * Utility class to convert Objects to Fotolia specific types.
 	 */
@@ -27,13 +27,13 @@ package net.tw.webapis.fotolia.util {
 			for each (var item:Object in a) ar.push(firstObjectItemToObject(item));
 			return ar;
 		}
-		/*
-		public static function traceObject(o:Object):Object {
+		
+		public static function traceObject(...args:Array):Array {
 			trace('traceObject--');
-			trace(ObjectUtil.toString(o));
-			return o;
+			trace(ObjectUtil.toString(args));
+			return args;
 		}
-		*/
+		
 		public static function getDataHandler(o:Object):Object {
 			o.languages=objectToArray(o.languages);
 			return o;
@@ -41,12 +41,12 @@ package net.tw.webapis.fotolia.util {
 		public static function userHandler(o:Object, params:Array):FotoliaUser {
 			return new FotoliaUser(params[0], o.session_id, params[1], params[2]);
 		}
-		public static function arrayToGalleries(a:Array, params:Array):Array {
+		public static function arrayToGalleries(a:Array, params:Array):* {
 			var gs:Array=[];
 			for each (var item:Object in a) {
 				gs.push(new FotoliaGallery(params[0], item));
 			}
-			return gs;
+			return params.length==2 ? {res:gs, target:params[1]} : gs;
 		}
 		public static function arrayToUserGalleries(a:Array, params:Array):Object {
 			var gs:Array=[];
