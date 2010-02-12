@@ -34,13 +34,19 @@ package net.tw.webapis.fotolia {
 		 * Boolean indicating if this gallery is the user's Lightbox.
 		 */
 		public function isLightbox():Boolean {
-			return super.name=='';
+			return name=='';
+		}
+		/**
+		 * This user gallery's URL on Fotolia's site.
+		 */
+		public function get url():String {
+			return FotoliaService.BASE_URL+'Lightbox'+(isLightbox() ? '' : '/'+id);
 		}
 		/**
 		 * Either returns the gallery's name, or 'Lightbox'.
 		 */
-		override public function get name():String {
-			return super.name=='' ? 'Lightbox' : super.name;
+		public function get safeName():String {
+			return isLightbox() ? 'Lightbox' : name;
 		}
 		/**
 		 * Signal dispatched after a dispose call.

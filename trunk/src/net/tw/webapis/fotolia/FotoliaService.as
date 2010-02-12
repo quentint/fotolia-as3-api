@@ -9,6 +9,7 @@ package net.tw.webapis.fotolia {
 	 */
 	public class FotoliaService extends FotoliaServiceRequester {
 		protected var _key:String;
+		protected var _showBusyCursor:Boolean=false;
 		//
 		protected var _faulted:Signal=new Signal(String, FaultEvent, Array);
 		protected var _tested:Signal=new Signal(Boolean);
@@ -20,6 +21,8 @@ package net.tw.webapis.fotolia {
 		protected var _loggedInUser:Signal=new Signal(FotoliaUser);
 		protected var _gotTags:Signal=new Signal(Array);
 		protected var _gotCountries:Signal=new Signal(Array);
+		//
+		public static const BASE_URL:String='http://www.fotolia.com/';
 		//
 		public static const METHOD_TEST:String='xmlrpc.test';
 		public static const METHOD_GET_DATA:String='xmlrpc.getData';
@@ -60,13 +63,22 @@ package net.tw.webapis.fotolia {
 			super(this);
 		}
 		/**
+		 * Specify wether remote calls should show a busy cursor.
+		 */
+		public function get showBusyCursor():Boolean {
+			return _showBusyCursor;
+		}
+		public function set showBusyCursor(value:Boolean):void {
+			_showBusyCursor = value;
+		}
+		/**
 		 * Utility to pick a language ID.
 		 * @param	langID
 		 * @return	Either the provided ID, or the defaultLangID
 		 * @see		#defaultLangID
 		 */
-		public function defLang(langID:uint=0):uint {
-			return langID==0 ? defaultLangID : langID;
+		public function autoPickLang(langID:uint=0):uint {
+			return (langID==0 || langID>LANG_PORTUGUESE_BR) ? defaultLangID : langID;
 		}
 		/**
 		 * The API key used for this service.
@@ -128,7 +140,7 @@ package net.tw.webapis.fotolia {
 				METHOD_GET_DATA,
 				[key],
 				gotData,
-				DataParser.getDataParser
+				DataParser.getDataHandler
 			);
 		}
 		/**
@@ -168,7 +180,7 @@ package net.tw.webapis.fotolia {
 		public function getGalleries(langID:uint=0):void {
 			loadRequest(
 				METHOD_GET_GALLERIES,
-				[key, defLang(langID)],
+				[key, autoPickLang(langID)],
 				gotGalleries,
 				DataParser.arrayToGalleries,
 				[this]
@@ -192,7 +204,7 @@ package net.tw.webapis.fotolia {
 		 * @see		http://us.fotolia.com/Services/API/Method/getCategories2
 		 */
 		public function getCategories(type:uint=1, langID:uint=0):void {
-			langID=defLang(langID);
+			langID=autoPickLang(langID);
 			loadRequest(
 				FotoliaCategory.getCategoryMethod(type),
 				[key, langID],
@@ -217,7 +229,7 @@ package net.tw.webapis.fotolia {
 		 * @see		http://us.fotolia.com/Services/API/Method/getSearchResults
 		 */
 		public function search(params:Object):void {
-			params.language_id=defLang(params.language_id);
+			params.language_id=autoPickLang(params.language_id);
 			//
 			loadRequest(
 				METHOD_GET_SEARCH_RESULTS,
@@ -245,7 +257,7 @@ package net.tw.webapis.fotolia {
 		public function getTags(langID:uint=0, type:String='Used'):void {
 			loadRequest(
 				METHOD_GET_TAGS,
-				[key, defLang(langID), type],
+				[key, autoPickLang(langID), type],
 				gotTags
 			);
 		}
@@ -266,7 +278,7 @@ package net.tw.webapis.fotolia {
 		public function getCountries(langID:uint=0):void {
 			loadRequest(
 				METHOD_GET_COUNTRIES,
-				[key, defLang(langID)],
+				[key, autoPickLang(langID)],
 				gotCountries
 			);
 		}
@@ -291,7 +303,7 @@ package net.tw.webapis.fotolia {
 				METHOD_LOGIN_USER,
 				[key, login, pass],
 				loggedInUser,
-				DataParser.parseUser,
+				DataParser.userHandler,
 				[this, login, pass]
 			);
 		}

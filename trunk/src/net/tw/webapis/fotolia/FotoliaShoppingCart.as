@@ -15,7 +15,7 @@ package net.tw.webapis.fotolia {
 		protected var _removedMedia:Signal=new Signal(FotoliaShoppingCart);
 		protected var _internalCleared:Signal=new Signal();
 		protected var _cleared:Signal=new Signal(FotoliaShoppingCart);
-		protected var _transferedToLightBox:Signal=new Signal(FotoliaShoppingCart);
+		protected var _transferredToLightBox:Signal=new Signal(FotoliaShoppingCart);
 		//
 		public static const METHOD_SHOPPING_CART_GET_LIST:String='shoppingcart.getList';
 		public static const METHOD_SHOPPING_CART_ADD:String='shoppingcart.add';
@@ -87,14 +87,14 @@ package net.tw.webapis.fotolia {
 		/**
 		 * Remote addMedia call.
 		 * @param	mediaID
-		 * @param	licenceName
+		 * @param	licenseName
 		 * @see		#addedMedia
 		 * @see		http://us.fotolia.com/Services/API/Method/shoppingcart_add
 		 */
-		public function addMedia(mediaID:uint, licenceName:String):void {
+		public function addMedia(mediaID:uint, licenseName:String):void {
 			loadRequest(
 				METHOD_SHOPPING_CART_ADD,
-				[key, user.sessionID, mediaID, licenceName],
+				[key, user.sessionID, mediaID, licenseName],
 				addedMedia,
 				DataParser.targetHandler,
 				[this]
@@ -158,14 +158,14 @@ package net.tw.webapis.fotolia {
 		 * Listeners will receive 1 argument: the target FotoliaShoppingCart.
 		 * @see #transferToLightbox()
 		 */
-		public function get transferedToLightbox():Signal {
-			return _transferedToLightBox;
+		public function get transferredToLightbox():Signal {
+			return _transferredToLightBox;
 		}
 		/**
 		 * Remote transferToLightbox call
 		 * @param	mediaID
 		 * @throws	ArgumentError
-		 * @see		#transferedToLoghtbox
+		 * @see		#transferredToLoghtbox
 		 * @see		http://us.fotolia.com/Services/API/Method/shoppingcart_transferToLightbox
 		 */
 		public function transferToLightbox(mediaID:*):void {
@@ -176,7 +176,7 @@ package net.tw.webapis.fotolia {
 			loadRequest(
 				METHOD_SHOPPING_CART_TRANSFER_TO_LIGHTBOX,
 				[key, user.sessionID, mediaID],
-				transferedToLightbox,
+				transferredToLightbox,
 				DataParser.targetHandler,
 				[this]
 			);

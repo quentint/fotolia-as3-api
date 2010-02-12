@@ -17,6 +17,15 @@ package net.tw.webapis.fotolia {
 		public static const SIZE_MEDIUM:uint=110;
 		public static const SIZE_LARGE:uint=400;
 		//
+		public static const TYPE_PHOTO:uint=1;
+		public static const TYPE_ILLUSTRATION:uint=2;
+		public static const TYPE_VECTOR:uint=3;
+		//
+		public static const LICENSE_L:String='L';
+		public static const LICENSE_XL:String='XL';
+		public static const LICENSE_XXL:String='XXL';
+		public static const LICENSE_X:String='X';
+		//
 		public static const METHOD_GET_MEDIA_DATA:String='xmlrpc.getMediaData';
 		//public static const METHOD_GET_MEDIA_GALLERIES:String='xmlrpc.getMediaGalleries';
 		public static const METHOD_GET_MEDIA_COMP:String='xmlrpc.getMediaComp';
@@ -49,11 +58,17 @@ package net.tw.webapis.fotolia {
 			_internalGotData.addOnce(onGotData);
 			loadRequest(
 				METHOD_GET_MEDIA_DATA,
-				[key, id, thumbnailSize, _service.defLang(langID)],
+				[key, id, thumbnailSize, _service.autoPickLang(langID)],
 				_internalGotData
 			);
 		}
 		protected function onGotData(o:Object):void {
+			var licenses:Object={};
+			for each(var l:Object in o.licenses) {
+				licenses[l.name]=l.price;
+			}
+			o.licenses=licenses;
+			//
 			mergeProps(o);
 			gotData.dispatch(this);
 		}
@@ -101,27 +116,27 @@ package net.tw.webapis.fotolia {
 		/**
 		 * Remote purchase call.
 		 * @param	sessionID		A Fotolia user session ID
-		 * @param	licenceName		Name of the licence to use for the purchase
+		 * @param	licenseName		Name of the license to use for the purchase
 		 * @see		#purchased
 		 * @see		http://us.fotolia.com/Services/API/Method/getMedia
 		 */
-		public function purchase(sessionID:String, licenceName:String):void {
+		public function purchase(sessionID:String, licenseName:String):void {
 			loadRequest(
 				METHOD_GET_MEDIA,
-				[key, sessionID, id, licenceName],
+				[key, sessionID, id, licenseName],
 				purchased,
 				DataParser.purchaseHandler,
 				[this]
 			);
 		}
 		/**
-		 * Media's ID
+		 * Media's ID.
 		 */
 		public function get id():uint {
 			return props.id;
 		}
 		/**
-		 * Media's title, requires a getData call for a FotoliaCartMedia
+		 * Media's title, requires a getData call for a FotoliaCartMedia.
 		 * @see #getData()
 		 * @see FotoliaCartMedia
 		 */
@@ -129,7 +144,7 @@ package net.tw.webapis.fotolia {
 			return props.title;
 		}
 		/**
-		 * Media's thumbnail URL, requires a getData call for a FotoliaCartMedia
+		 * Media's thumbnail URL, requires a getData call for a FotoliaCartMedia.
 		 * @see #getData()
 		 * @see FotoliaCartMedia
 		 */
@@ -137,7 +152,13 @@ package net.tw.webapis.fotolia {
 			return props.thumbnail_url;
 		}
 		/**
-		 * Media's creator ID, requires a getData call for a FotoliaCartMedia
+		 * Returns this media's URL on Fotolia's site.
+		 */
+		public function get url():String {
+			return FotoliaService.BASE_URL+'id/'+id;
+		}
+		/**
+		 * Media's creator ID, requires a getData call for a FotoliaCartMedia.
 		 * @see #getData()
 		 * @see FotoliaCartMedia
 		 */
@@ -145,7 +166,7 @@ package net.tw.webapis.fotolia {
 			return props.creator_id;
 		}
 		/**
-		 * Media's creator name, requires a getData call for a FotoliaCartMedia
+		 * Media's creator name, requires a getData call for a FotoliaCartMedia.
 		 * @see #getData()
 		 * @see FotoliaCartMedia
 		 */
@@ -153,7 +174,7 @@ package net.tw.webapis.fotolia {
 			return props.creator_name;
 		}
 		/**
-		 * Media's thumbnail size, requires a getData call for a FotoliaCartMedia
+		 * Media's thumbnail size, requires a getData call for a FotoliaCartMedia.
 		 * @see #getData()
 		 * @see FotoliaCartMedia
 		 */
@@ -161,22 +182,54 @@ package net.tw.webapis.fotolia {
 			return new Point(props.thumbnail_width, props.thumbnail_height);
 		}
 		/**
-		 * Media's available licences, requires a getData call for a FotoliaCartMedia
+		 * Media's available licenses, requires a getData call for a FotoliaCartMedia.
 		 * @see #getData()
 		 * @see FotoliaCartMedia
 		 */
-		public function get licenses():Array {
+		public function get licenses():Object {
 			return props.licenses;
 		}
 		/**
-		 * Media's type ID, requires a getData() call
+		 * Checks if this media is available for a given license, might require a getData call.
+		 * @see #licenses
+		 */
+		public function hasLicense(licenseName:String):Boolean {
+			return licenses.hasOwnProperty(licenseName);
+		}
+		/**
+		 * Checks if enough data has been fetched to get this media's licenses' details.
+		 * @see #licensesDetails
+		 */
+		public function hasLicenseDetails(licenseName:String):Boolean {
+			return licensesDetails.hasOwnProperty(licenseName);
+		}
+		/**
+		 * Returns the price for a given license.
+		 * @return	The price for a given license. -1 if the license is not available, or if not enought data has been fetched.
+		 * @see		#licenses
+		 */
+		public function getLicensePrice(licenseName:String):int {
+			if (!hasLicense(licenseName)) return -1;
+			return licenses[licenseName];
+		}
+		/**
+		 * Returns the details for a given license.
+		 * @return	The details for a given license. null if the license is not available, or if not enought data has been fetched.
+		 * @see		#licensesDetails
+		 */
+		public function getLicenseDetails(licenseName:String):* {
+			if (!hasLicenseDetails(licenseName)) return null;
+			return licensesDetails[licenseName];
+		}
+		/**
+		 * Media's type ID, requires a getData() call.
 		 * @see #getData()
 		 */
-		public function get mediaTypeID():uint {
+		public function get typeID():uint {
 			return props.media_type_id;
 		}
 		/**
-		 * Media's country ID, requires a getData() call
+		 * Media's country ID, requires a getData() call.
 		 * @see #getData()
 		 * @see FotoliaService#getCountries()
 		 */
@@ -184,67 +237,88 @@ package net.tw.webapis.fotolia {
 			return props.country_id;
 		}
 		/**
-		 * Media's country name, requires a getData() call
+		 * Media's country name, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get countryName():String {
 			return props.country_name;
 		}
 		/**
-		 * Media's number of views, requires a getData() call
+		 * Media's number of views, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get nbViews():uint {
 			return props.nb_views;
 		}
 		/**
-		 * Media's number of downloads, requires a getData() call
+		 * Media's number of downloads, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get nbDownloads():uint {
 			return props.nb_downloads;
 		}
 		/**
-		 * Media's keywords, requires a getData() call
+		 * Media's keywords, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get keywords():Array {
 			return DataParser.objectArrayToFirstObjectItemArray(props.keywords);
 		}
 		/**
-		 * Media's licence details, requires a getData() call
+		 * Media's license details, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get licensesDetails():Object {
 			return props.licenses_details;
 		}
 		/**
-		 * Media's representative category, requires a getData() call
+		 * Media's representative category, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get representativeCategory():Object {
 			return props.cat1;
 		}
 		/**
-		 * Media's conceptual category, requires a getData() call
+		 * Media's conceptual category, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get conceptualCategory():Object {
 			return props.cat2;
 		}
 		/**
-		 * Media's representative category hierachy, requires a getData() call
+		 * Media's representative category hierachy, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get representativeCategoryHierarchy():Array {
 			return props.cat1_hierarchy;
 		}
 		/**
-		 * Media's conceptual category hierarchy, requires a getData() call
+		 * Media's conceptual category hierarchy, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get conceptualCategoryHierarchy():Array {
 			return props.cat2_hierarchy;
+		}
+		/**
+		 * Indicates if this media is a photo.
+		 * @see #TYPE_PHOTO
+		 */
+		public function isPhoto():Boolean {
+			return typeID==TYPE_PHOTO;
+		}
+		/**
+		 * Indicates if this media is an illustration.
+		 * @see #TYPE_ILLUSTRATION
+		 */
+		public function isIllustration():Boolean {
+			return typeID==TYPE_ILLUSTRATION;
+		}
+		/**
+		 * Indicates if this media is a vector.
+		 * @see #TYPE_VECTOR
+		 */
+		public function isVector():Boolean {
+			return typeID==TYPE_VECTOR;
 		}
 	}
 }

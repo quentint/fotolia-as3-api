@@ -34,11 +34,11 @@ package net.tw.webapis.fotolia.util {
 			return o;
 		}
 		*/
-		public static function getDataParser(o:Object):Object {
+		public static function getDataHandler(o:Object):Object {
 			o.languages=objectToArray(o.languages);
 			return o;
 		}
-		public static function parseUser(o:Object, params:Array):FotoliaUser {
+		public static function userHandler(o:Object, params:Array):FotoliaUser {
 			return new FotoliaUser(params[0], o.session_id, params[1], params[2]);
 		}
 		public static function arrayToGalleries(a:Array, params:Array):Array {

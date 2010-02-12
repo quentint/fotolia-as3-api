@@ -28,7 +28,7 @@ package net.tw.webapis.fotolia {
 			super(pService);
 			_props=pProps;
 			_type=pType;
-			_langID=_service.defLang(pLangID);
+			_langID=_service.autoPickLang(pLangID);
 			_parent=pParent;
 		}
 		/**
@@ -59,13 +59,13 @@ package net.tw.webapis.fotolia {
 		 * Boolean indicating if this category is a representative one.
 		 */
 		public function isRepresentative():Boolean {
-			return type==1;
+			return type==TYPE_REPRESENTATIVE;
 		}
 		/**
 		 * Boolean indicating if this category is a conceptual one.
 		 */
 		public function isConceptual():Boolean {
-			return type==2;
+			return type==TYPE_CONCEPTUAL;
 		}
 		/**
 		 * Category's language ID.
@@ -75,13 +75,18 @@ package net.tw.webapis.fotolia {
 			return _langID;
 		}
 		/**
-		 * Category's name.
+		 * Category's name as received from the API, could contain some HTML entities.
+		 * @see #name
 		 */
-		public function get name():String {
+		public function get rawName():String {
 			return props.name;
 		}
-		public function get cleanName():String {
-			return name.replace('&amp;', '&');
+		/**
+		 * Category's name, without HTML entities.
+		 * @see #rawName
+		 */
+		public function get name():String {
+			return rawName.replace('&amp;', '&');
 		}
 		/**
 		 * Category's ID
@@ -90,7 +95,13 @@ package net.tw.webapis.fotolia {
 			return props.id;
 		}
 		/**
-		 * Utility method to get a category method's name from a category type ID
+		 * Returns this category's URL on Fotolia's site.
+		 */
+		public function get url():String {
+			return FotoliaService.BASE_URL+'cat'+type+'/'+id;
+		}
+		/**
+		 * Utility method to get a category method's name from a category type ID.
 		 * @param	type
 		 * @return	The method name to use for the given type
 		 */
@@ -98,7 +109,7 @@ package net.tw.webapis.fotolia {
 			return type==FotoliaCategory.TYPE_REPRESENTATIVE ? METHOD_GET_CATEGORIES_REPRESENTATIVE : METHOD_GET_CATEGORIES_CONCEPTUAL;
 		}
 		/**
-		 * Signal dispatched after a getCategories call
+		 * Signal dispatched after a getCategories call.
 		 * Listeners will receive 1 argument: an Array of FotoliaCatory objects
 		 * @see #getCategories
 		 */
@@ -106,7 +117,7 @@ package net.tw.webapis.fotolia {
 			return _gotCategories;
 		}
 		/**
-		 * Remote getCategories call
+		 * Remote getCategories call.
 		 * @param	pLangID
 		 * @see #gotCategories
 		 * @see http://us.fotolia.com/Services/API/Method/getCategories1
