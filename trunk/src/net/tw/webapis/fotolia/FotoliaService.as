@@ -23,6 +23,7 @@ package net.tw.webapis.fotolia {
 		protected var _gotCountries:Signal=new Signal(Array);
 		//
 		public static const BASE_URL:String='http://www.fotolia.com/';
+		public static const SIGN_UP_URL:String=BASE_URL+'Member/SignUp';
 		//
 		public static const METHOD_TEST:String='xmlrpc.test';
 		public static const METHOD_GET_DATA:String='xmlrpc.getData';

@@ -8,6 +8,7 @@ package net.tw.webapis.fotolia {
 	import com.ak33m.rpc.core.RPCResponder;
 	import com.ak33m.rpc.core.RPCEvent;
 	import net.tw.webapis.fotolia.util.DataParser;
+	import flash.utils.getTimer;
 	/**
 	 * Represents a Fotolia XML-RPC request.
 	 */
@@ -24,7 +25,7 @@ package net.tw.webapis.fotolia {
 		//
 		public function FotoliaServiceRequest(pService:FotoliaService, pMethod:String, pArgs:Array, pResultSignal:Signal, pParser:Function=null, pParserParams:Array=null) {
 			endpoint=ENDPOINT;
-			destination=DESTINATION;
+			destination=DESTINATION+'?'+getTimer();
 			//
 			_service=pService;
 			_method=pMethod;
