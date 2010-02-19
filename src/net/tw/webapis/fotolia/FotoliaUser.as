@@ -40,6 +40,9 @@ package net.tw.webapis.fotolia {
 			_sessionID=pSessionID;
 			_login=pLogin;
 			_pass=pPass;
+			//
+			_internalGotData.add(onGotData);
+			_internalGotStats.add(onGotStats);
 		}
 		/**
 		 * Will be true if a successful call to getData was made.
@@ -260,7 +263,6 @@ package net.tw.webapis.fotolia {
 		 * @see http://us.fotolia.com/Services/API/Method/getUserData
 		 */
 		public function getData():void {
-			_internalGotData.addOnce(onGotData);
 			loadRequest(
 				METHOD_GET_USER_DATA,
 				[key, sessionID],
@@ -287,7 +289,6 @@ package net.tw.webapis.fotolia {
 		 * @see http://us.fotolia.com/Services/API/Method/getUserStats
 		 */
 		public function getStats():void {
-			_internalGotStats.addOnce(onGotStats);
 			loadRequest(
 				METHOD_GET_USER_STATS,
 				[key, sessionID],

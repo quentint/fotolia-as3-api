@@ -52,6 +52,7 @@ package net.tw.webapis.fotolia {
 		public function FotoliaMedia(pService:FotoliaService, pProps:Object) {
 			super(pService);
 			_props=pProps;
+			_internalGotData.add(onGotData);
 		}
 		/**
 		 * Signal dispatched after a getData call.
@@ -70,7 +71,6 @@ package net.tw.webapis.fotolia {
 		 * @see		http://us.fotolia.com/Services/API/Method/getMediaData
 		 */
 		public function getData(thumbnailSize:uint=110, langID:uint=0):void {
-			_internalGotData.addOnce(onGotData);
 			loadRequest(
 				METHOD_GET_MEDIA_DATA,
 				[key, id, thumbnailSize, _service.autoPickLang(langID)],

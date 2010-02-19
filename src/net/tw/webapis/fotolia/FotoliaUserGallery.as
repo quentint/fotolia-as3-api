@@ -15,6 +15,8 @@ package net.tw.webapis.fotolia {
 		public static const METHOD_DELETE_USER_GALLERY:String='xmlrpc.deleteUserGallery';
 		public static const METHOD_ADD_TO_USER_GALLERY:String='xmlrpc.addToUserGallery';
 		public static const METHOD_REMOVE_FROM_USER_GALLERY:String='xmlrpc.removeFromUserGallery';
+		//
+		public static const TO_MODERATE_GALLERY_NAME:String='To moderate';
 		/**
 		 * @param	pService	Used for its API key and fault handler
 		 * @param	props		Random properties to be passed-in
@@ -37,9 +39,22 @@ package net.tw.webapis.fotolia {
 			return name=='';
 		}
 		/**
+		 * Boolean indicating if this gallery is the "To moderate" one.
+		 */
+		public function isToModerate():Boolean {
+			return name==TO_MODERATE_GALLERY_NAME;
+		}
+		/**
+		 * Boolean indicating if this gallery is supposed to be removed (disposed).
+		 * @see #dispose()
+		 */
+		public function isDisposable():Boolean {
+			return !isLightbox() && !isToModerate();
+		}
+		/**
 		 * This user gallery's URL on Fotolia's site.
 		 */
-		public function get url():String {
+		override public function get url():String {
 			return FotoliaService.BASE_URL+'Lightbox'+(isLightbox() ? '' : '/'+id);
 		}
 		/**
