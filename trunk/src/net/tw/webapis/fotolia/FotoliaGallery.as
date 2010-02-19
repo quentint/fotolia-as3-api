@@ -28,7 +28,7 @@ package net.tw.webapis.fotolia {
 		/**
 		 * Gallery's URL on Fotolia's site.
 		 */
-		public function get url():String {
+		override public function get url():String {
 			return FotoliaService.BASE_URL+'Galleries/'+id;
 		}
 	}

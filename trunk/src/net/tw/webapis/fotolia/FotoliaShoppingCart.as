@@ -29,6 +29,8 @@ package net.tw.webapis.fotolia {
 		public function FotoliaShoppingCart(pService:FotoliaService, pUser:FotoliaUser) {
 			super(pService);
 			_user=pUser;
+			_internalGotList.add(onListGot);
+			_internalCleared.add(onCleared);
 		}
 		/**
 		 * The user linked to this shopping cart.
@@ -53,7 +55,6 @@ package net.tw.webapis.fotolia {
 		 * @see http://us.fotolia.com/Services/API/Method/shoppingcart_getList
 		 */
 		public function getList():void {
-			_internalGotList.addOnce(onListGot);
 			loadRequest(
 				METHOD_SHOPPING_CART_GET_LIST,
 				[key, user.sessionID],
@@ -142,7 +143,6 @@ package net.tw.webapis.fotolia {
 		 * @see http://us.fotolia.com/Services/API/Method/shoppingcart_clear
 		 */
 		public function clear():void {
-			_internalCleared.addOnce(onCleared);
 			loadRequest(
 				METHOD_SHOPPING_CART_CLEAR,
 				[key, user.sessionID],

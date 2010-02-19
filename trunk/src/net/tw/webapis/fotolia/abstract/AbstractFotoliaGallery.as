@@ -10,6 +10,7 @@ package net.tw.webapis.fotolia.abstract {
 	 */
 	public class AbstractFotoliaGallery extends FotoliaServiceRequester {
 		protected var _gotMedias:Signal=new Signal(FotoliaSearchResults);
+		protected var _lastResults:FotoliaSearchResults;
 		/**
 		 * @param	pService	Used for its API key and fault handler
 		 * @param	pProps		Random properties to be passed-in
@@ -17,6 +18,7 @@ package net.tw.webapis.fotolia.abstract {
 		public function AbstractFotoliaGallery(pService:FotoliaService, pProps:Object) {
 			super(pService);
 			_props=pProps;
+			gotMedias.add(onMediasGot);
 		}
 		/**
 		 * The gallery's ID
@@ -25,20 +27,28 @@ package net.tw.webapis.fotolia.abstract {
 			return props.id;
 		}
 		/**
-		 * The gallery's name
+		 * The gallery's name.
 		 */
 		public function get name():String {
 			return props.name;
 		}
 		/**
-		 * The gallery's number of medias
+		 * The gallery's number of medias.
 		 */
 		public function get nbMedia():uint {
 			return props.nb_media;
 		}
 		/**
-		 * Signal dispatched after a getMedias call
-		 * Listeners will receive 1 argument: a FotoliaSearchResults object
+		 * Fetched gallery medias.
+		 * A FotoliaSearchResults object.
+		 * @see #getMedias()
+		 */
+		public function get lastResults():FotoliaSearchResults {
+			return _lastResults;
+		}
+		/**
+		 * Signal dispatched after a getMedias call.
+		 * Listeners will receive 1 argument: a FotoliaSearchResults object.
 		 * @see #getMedias()
 		 * @see FotoliaSearchResults
 		 */
@@ -46,7 +56,7 @@ package net.tw.webapis.fotolia.abstract {
 			return _gotMedias;
 		}
 		/**
-		 * Remote getMedias call
+		 * Remote getMedias call.
 		 * @param	params
 		 * @see		#gotMedias
 		 * @see		http://us.fotolia.com/Services/API/Method/getUserGalleryMedias
@@ -64,6 +74,13 @@ package net.tw.webapis.fotolia.abstract {
 				DataParser.objectToSearchResults,
 				[_service]
 			);
+		}
+		protected function onMediasGot(sr:FotoliaSearchResults):void {
+			_lastResults=sr;
+			props.nb_media=sr.nbResults;
+		}
+		public function get url():String {
+			return '';
 		}
 	}
 }
