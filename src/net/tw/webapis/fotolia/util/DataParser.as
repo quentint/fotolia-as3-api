@@ -63,12 +63,12 @@ package net.tw.webapis.fotolia.util {
 			for each(var item:* in o) return item=='SUCCESS';
 			return false;
 		}
-		public static function objectToCategories(o:Object, params:Array):Array {
+		public static function objectToCategories(o:Object, params:Array):* {
 			var cs:Array=[];
 			for each(var item:Object in o) {
 				cs.push(new FotoliaCategory(params[0], item, params[1], params[2], params[3]));
 			}
-			return cs;
+			return params.length==4 ? {res:cs, target:params[3]} : cs;
 		}
 		public static function objectToSearchResults(o:Object, params:Object):FotoliaSearchResults {
 			var medias:Array=[];

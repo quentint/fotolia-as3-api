@@ -15,8 +15,10 @@ package net.tw.webapis.fotolia {
 		protected var _type:uint;
 		protected var _langID:uint;
 		protected var _parent:FotoliaCategory;
+		protected var _categories:Array=[];
+		protected var _fetchedCategories:Boolean=false;
 		//
-		protected var _gotCategories:Signal=new Signal(Array);
+		protected var _gotCategories:Signal=new Signal(Array, FotoliaCategory);
 		/**
 		 * @param	pService	Used for its API key and fault handler
 		 * @param	pProps		Random properties to be passed-in
@@ -30,6 +32,7 @@ package net.tw.webapis.fotolia {
 			_type=pType;
 			_langID=_service.autoPickLang(pLangID);
 			_parent=pParent;
+			gotCategories.add(onCategoriesGot);
 		}
 		/**
 		 * Parent category
@@ -110,8 +113,9 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Signal dispatched after a getCategories call.
-		 * Listeners will receive 1 argument: an Array of FotoliaCatory objects
-		 * @see #getCategories
+		 * Listeners will receive 2 arguments: an Array of FotoliaCatory objects and the target FotoliaCategory, the array will also be available via the categories property.
+		 * @see #getCategories()
+		 * @see #categories
 		 */
 		public function get gotCategories():Signal {
 			return _gotCategories;
@@ -132,6 +136,23 @@ package net.tw.webapis.fotolia {
 				DataParser.objectToCategories,
 				[_service, type, lid, this]
 			);
+		}
+		protected function onCategoriesGot(a:Array, c:FotoliaCategory):void {
+			_categories=a;
+			_fetchedCategories=true;
+		}
+		/**
+		 * Returns an Array of sub-categories for this category, if any.
+		 * @see #getCategories()
+		 */
+		public function get categories():Array {
+			return _categories;
+		}
+		/**
+		 * Boolean indicating if sub-galleries have been fetched.
+		 */
+		public function fetchedCategories():Boolean {
+			return _fetchedCategories;
 		}
 	}
 }

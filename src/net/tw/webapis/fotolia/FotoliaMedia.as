@@ -13,7 +13,7 @@ package net.tw.webapis.fotolia {
 		protected var _gotComp:Signal=new Signal(Object, FotoliaMedia);
 		protected var _purchased:Signal=new Signal(String, FotoliaMedia);
 		//
-		protected var _dataFetched:Boolean=false;
+		protected var _fetchedData:Boolean=false;
 		//
 		public static const SIZE_SMALL:uint=30;
 		public static const SIZE_MEDIUM:uint=110;
@@ -85,14 +85,14 @@ package net.tw.webapis.fotolia {
 			o.licenses=licenses;
 			//
 			mergeProps(o);
-			_dataFetched=true;
+			_fetchedData=true;
 			gotData.dispatch(this);
 		}
 		/**
 		 * Will be true if a successful call to getData was made.
 		 */
-		public function get dataFetched():Boolean {
-			return _dataFetched;
+		public function get fetchedData():Boolean {
+			return _fetchedData;
 		}
 		/**
 		 * Signal dispacthed after a getGalleries call.
@@ -124,7 +124,7 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Remote getComp call.
-		 * @see #gotComp()
+		 * @see #gotComp
 		 * @see http://us.fotolia.com/Services/API/Method/getMediaComp
 		 */
 		public function getComp():void {

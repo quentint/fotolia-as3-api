@@ -36,7 +36,7 @@ package net.tw.webapis.fotolia {
 		 * Boolean indicating if this gallery is the user's Lightbox.
 		 */
 		public function isLightbox():Boolean {
-			return name=='';
+			return rawName=='';
 		}
 		/**
 		 * Boolean indicating if this gallery is the "To moderate" one.
@@ -59,9 +59,17 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Either returns the gallery's name, or 'Lightbox'.
+		 * @see #rawName
 		 */
-		public function get safeName():String {
-			return isLightbox() ? 'Lightbox' : name;
+		override public function get name():String {
+			return isLightbox() ? 'Lightbox' : rawName;
+		}
+		/**
+		 * Returns the gallery's name, could be an empty String (Lightbox).
+		 * @see #name
+		 */
+		public function get rawName():String {
+			return super.name;
 		}
 		/**
 		 * Signal dispatched after a dispose call.
@@ -88,7 +96,7 @@ package net.tw.webapis.fotolia {
 		/**
 		 * Signal dispatched after an addMedia call.
 		 * Listeners will receive 1 argument: the target FotoliaUserGallery.
-		 * @see #addMedia
+		 * @see #addMedia()
 		 */
 		public function get addedMedia():Signal {
 			return _addedMedia;
@@ -111,7 +119,7 @@ package net.tw.webapis.fotolia {
 		/**
 		 * Signal dispatched after a removeMedia call.
 		 * Listeners will receive 1 argument: the target FotoliaUserGallery.
-		 * @see #removeMedia
+		 * @see #removeMedia()
 		 */
 		public function get removedMedia():Signal {
 			return _removedMedia;

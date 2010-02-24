@@ -23,7 +23,11 @@ package net.tw.webapis.fotolia.abstract {
 		protected function mergeProps(o:Object):void { 
 			for (var prop:String in o) _props[prop]=o[prop];
 		}
-		protected function loadRequest(method:String, args:Array, resultSignal:Signal, parser:Function=null, parserParams:Array=null):FotoliaServiceRequest {
+		protected function loadRequest(method:String,
+									   args:Array,
+									   resultSignal:Signal,
+									   parser:Function=null,
+									   parserParams:Array=null):FotoliaServiceRequest {
 			var fsReq:FotoliaServiceRequest=new FotoliaServiceRequest(_service, method, args, resultSignal, parser, parserParams);
 			fsReq.showBusyCursor=_service.showBusyCursor;
 			fsReq.load();

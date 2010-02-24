@@ -7,13 +7,12 @@ package net.tw.webapis.fotolia {
 	 */
 	public class FotoliaShoppingCart extends FotoliaServiceRequester {
 		protected var _user:FotoliaUser;
-		protected var _medias:Array;
+		protected var _medias:Array=[];
 		//
 		protected var _internalGotList:Signal=new Signal();
 		protected var _gotList:Signal=new Signal(Array, FotoliaShoppingCart);
 		protected var _addedMedia:Signal=new Signal(FotoliaShoppingCart);
 		protected var _removedMedia:Signal=new Signal(FotoliaShoppingCart);
-		protected var _internalCleared:Signal=new Signal();
 		protected var _cleared:Signal=new Signal(FotoliaShoppingCart);
 		protected var _transferredToLightBox:Signal=new Signal(FotoliaShoppingCart);
 		//
@@ -30,7 +29,9 @@ package net.tw.webapis.fotolia {
 			super(pService);
 			_user=pUser;
 			_internalGotList.add(onListGot);
-			_internalCleared.add(onCleared);
+			//
+			cleared.add(onCleared);
+			transferredToLightbox.add(onCleared);
 		}
 		/**
 		 * The user linked to this shopping cart.
@@ -71,8 +72,9 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Fetched shopping cart medias.
-		 * An Array of FotoliaCartMedia.
-		 * @see #getMedias()
+		 * This Array will NOT be updated after addMedia and removeMedia calls!
+		 * @return	An Array of FotoliaCartMedia.
+		 * @see		#getMedias()
 		 */
 		public function get medias():Array {
 			return _medias;
@@ -146,12 +148,13 @@ package net.tw.webapis.fotolia {
 			loadRequest(
 				METHOD_SHOPPING_CART_CLEAR,
 				[key, user.sessionID],
-				_internalCleared
+				cleared,
+				DataParser.targetHandler,
+				[this]
 			);
 		}
-		protected function onCleared(o:Object):void {
+		protected function onCleared(sc:FotoliaShoppingCart):void {
 			_medias=[];
-			cleared.dispatch(this);
 		}
 		/**
 		 * Signal dispatched after a transferToLightbox call.
