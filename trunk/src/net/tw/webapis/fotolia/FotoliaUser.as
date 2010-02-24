@@ -10,8 +10,10 @@ package net.tw.webapis.fotolia {
 		protected var _login:String;
 		protected var _pass:String;
 		//
-		protected var _dataFetched:Boolean=false;
-		protected var _statsFetched:Boolean=false;
+		protected var _fetchedData:Boolean=false;
+		protected var _fetchedStats:Boolean=false;
+		protected var _fetchedGalleries:Boolean=false;
+		protected var _galleries:Array=[];
 		//
 		protected var _shoppingCart:FotoliaShoppingCart;
 		//
@@ -43,18 +45,20 @@ package net.tw.webapis.fotolia {
 			//
 			_internalGotData.add(onGotData);
 			_internalGotStats.add(onGotStats);
+			//
+			gotGalleries.add(onGalleriesGot);
 		}
 		/**
 		 * Will be true if a successful call to getData was made.
 		 */
-		public function get dataFetched():Boolean {
-			return _dataFetched;
+		public function get fetchedData():Boolean {
+			return _fetchedData;
 		}
 		/**
 		 * Will be true if a successful call to getStats was made.
 		 */
-		public function get statsFetched():Boolean {
-			return _statsFetched;
+		public function get fetchedStats():Boolean {
+			return _fetchedStats;
 		}
 		/**
 		 * User's session ID.
@@ -226,6 +230,24 @@ package net.tw.webapis.fotolia {
 			);
 		}
 		/**
+		 * Boolean indicating if galleries have been fetched.
+		 * @see getGalleries()
+		 */
+		public function get fetchedGalleries():Boolean {
+			return _fetchedGalleries;
+		}
+		protected function onGalleriesGot(ugs:Array, u:FotoliaUser):void {
+			_fetchedGalleries=true;
+			_galleries=ugs;
+		}
+		/**
+		 * Contains the galleries fetched by getGalleries. This Array will NOT be updated after createGallery calls!
+		 * @see #getGalleries() 
+		 */
+		public function get galleries():Array {
+			return _galleries;
+		}
+		/**
 		 * Signal dispatched after a createGallery call.
 		 * Listeners will receive 2 arguments: the newly created FotoliaUserGallery and the target FotoliaUser.
 		 * @see #createGallery()
@@ -271,7 +293,7 @@ package net.tw.webapis.fotolia {
 		}
 		protected function onGotData(o:Object):void {
 			mergeProps(o);
-			_dataFetched=true;
+			_fetchedData=true;
 			gotData.dispatch(this);
 		}
 		/**
@@ -297,7 +319,7 @@ package net.tw.webapis.fotolia {
 		}
 		protected function onGotStats(o:Object):void {
 			mergeProps(o);
-			_statsFetched=true;
+			_fetchedStats=true;
 			gotStats.dispatch(this);
 		}
 	}
