@@ -116,6 +116,12 @@ package net.tw.webapis.fotolia {
 			);
 		}
 		/**
+		 * Boolean indicating if this media has a comp file.
+		 */
+		public function canGetComp():Boolean {
+			return isPhoto() || isIllustration();
+		}
+		/**
 		 * Signal dispacthed after a getComp call.
 		 * Listeners will receive 2 arguments: an Object (with url:String, width:uint and height:uint properties), and the target FotoliaMedia.
 		 */
@@ -127,7 +133,8 @@ package net.tw.webapis.fotolia {
 		 * @see #gotComp
 		 * @see http://us.fotolia.com/Services/API/Method/getMediaComp
 		 */
-		public function getComp():void {
+		public function getComp():Boolean {
+			if (!canGetComp()) return false;
 			loadRequest(
 				METHOD_GET_MEDIA_COMP,
 				[key, id],
@@ -135,6 +142,7 @@ package net.tw.webapis.fotolia {
 				DataParser.rawObjectTargetHandler,
 				[this]
 			);
+			return true;
 		}
 		/**
 		 * Signal dispatched after a purchse call.
@@ -358,6 +366,11 @@ package net.tw.webapis.fotolia {
 		 */
 		public function isVideo():Boolean {
 			return typeID==TYPE_VIDEO;
+		}
+		public function get extension():String {
+			if (isPhoto() || isIllustration()) return 'jpg';
+			//if (isVector()) return 'xxx';
+			return 'xxx';
 		}
 	}
 }

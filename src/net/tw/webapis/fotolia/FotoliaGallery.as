@@ -1,6 +1,7 @@
 package net.tw.webapis.fotolia {
 	import flash.geom.Point;
 	import net.tw.webapis.fotolia.abstract.AbstractFotoliaGallery;
+	import net.tw.webapis.fotolia.util.DataParser;
 	/**
 	 * Represents a public Fotolia gallery.
 	 */
@@ -12,6 +13,25 @@ package net.tw.webapis.fotolia {
 		public function FotoliaGallery(pService:FotoliaService, pProps:Object) {
 			super(pService, props);
 			_props=pProps;
+		}
+		/**
+		 * Remote getMedias call.
+		 * @param	params
+		 * @see		#gotMedias
+		 * @see		http://us.fotolia.com/Services/API/Method/getSearchResults
+		 */
+		public function getMedias(params:Object=null):void {
+			if (!params) params={};
+			params.gallery_id=id;
+			params.language_id=_service.autoPickLang(params.language_id);
+			//
+			loadRequest(
+				FotoliaService.METHOD_GET_SEARCH_RESULTS,
+				[key, params],
+				gotMedias,
+				DataParser.objectToSearchResults,
+				[_service]
+			);
 		}
 		/**
 		 * Gallery's thumbnail URL.
