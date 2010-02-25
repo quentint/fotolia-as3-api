@@ -55,26 +55,6 @@ package net.tw.webapis.fotolia.abstract {
 		public function get gotMedias():Signal {
 			return _gotMedias;
 		}
-		/**
-		 * Remote getMedias call.
-		 * @param	params
-		 * @see		#gotMedias
-		 * @see		http://us.fotolia.com/Services/API/Method/getUserGalleryMedias
-		 * @see		http://us.fotolia.com/Services/API/Method/getSearchResults
-		 */
-		public function getMedias(params:Object=null):void {
-			if (!params) params={};
-			params.gallery_id=id;
-			params.language_id=_service.autoPickLang(params.language_id);
-			//
-			loadRequest(
-				FotoliaService.METHOD_GET_SEARCH_RESULTS,
-				[key, params],
-				gotMedias,
-				DataParser.objectToSearchResults,
-				[_service]
-			);
-		}
 		protected function onMediasGot(sr:FotoliaSearchResults):void {
 			_lastResults=sr;
 			props.nb_media=sr.nbResults;
