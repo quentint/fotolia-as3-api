@@ -12,8 +12,7 @@ package net.tw.webapis.fotolia {
 		//
 		protected var _fetchedData:Boolean=false;
 		protected var _fetchedStats:Boolean=false;
-		protected var _fetchedGalleries:Boolean=false;
-		protected var _galleries:Array=[];
+		protected var _galleries:Array;
 		//
 		protected var _shoppingCart:FotoliaShoppingCart;
 		//
@@ -229,15 +228,7 @@ package net.tw.webapis.fotolia {
 				[_service, this]
 			);
 		}
-		/**
-		 * Boolean indicating if galleries have been fetched.
-		 * @see getGalleries()
-		 */
-		public function get fetchedGalleries():Boolean {
-			return _fetchedGalleries;
-		}
 		protected function onGalleriesGot(ugs:Array, u:FotoliaUser):void {
-			_fetchedGalleries=true;
 			_galleries=ugs;
 		}
 		/**
