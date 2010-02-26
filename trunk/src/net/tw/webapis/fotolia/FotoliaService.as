@@ -4,6 +4,8 @@ package net.tw.webapis.fotolia {
 	import net.tw.webapis.fotolia.util.DataParser;
 	import org.osflash.signals.*;
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
+	import mx.collections.ArrayCollection;
+
 	/**
 	 * Main class of the API, provides access to every features.
 	 */
@@ -54,7 +56,8 @@ package net.tw.webapis.fotolia {
 		public static const TAGS_USED:String='Used';
 		public static const TAGS_SEARCHED:String='Searched';
 		//
-		public static const SEARCH_LIMIT:uint=64;
+		public static const SEARCH_DEFAULT_LIMIT:uint=32;
+		public static const SEARCH_MAX_LIMIT:uint=64;
 		//
 		public static const SEARCH_ORDER_RELEVANCE:String='relevance';
 		public static const SEARCH_ORDER_PRICE_ASC:String='price_1';
@@ -472,6 +475,18 @@ package net.tw.webapis.fotolia {
 				DataParser.userHandler,
 				[this, login, pass]
 			);
+		}
+		public static function get languages():ArrayCollection {
+			return new ArrayCollection([
+				{label:'Français',		id:LANG_FRENCH},
+				{label:'English US',	id:LANG_ENGLISH_US},
+				{label:'English UK',	id:LANG_ENGLISH_UK},
+				{label:'Deutsch',		id:LANG_GERMAN},
+				{label:'Español',		id:LANG_SPANISH},
+				{label:'Italiano',		id:LANG_ITALIAN},
+				{label:'Português PT',	id:LANG_PORTUGUESE_PT},
+				{label:'Português BR',	id:LANG_PORTUGUESE_BR}
+			]);
 		}
 	}
 }

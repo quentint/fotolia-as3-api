@@ -117,6 +117,7 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Boolean indicating if this media has a comp file.
+		 * Might return false if typeID hasn't been fetched yet!
 		 */
 		public function canGetComp():Boolean {
 			return isPhoto() || isIllustration();
