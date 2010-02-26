@@ -74,7 +74,8 @@ package net.tw.webapis.fotolia.util {
 			var medias:Array=[];
 			for (var p:String in o) {
 				if (!/^[0-9]*$/.test(p)) continue;
-				medias.push(new FotoliaMedia(params[0], o[p]));
+				//medias.push(new FotoliaMedia(params[0], o[p]));
+				medias.push(FotoliaMedia.getFromProps(params[0], o[p]));
 			}
 			return new FotoliaSearchResults(o.nb_results, medias);
 		}
