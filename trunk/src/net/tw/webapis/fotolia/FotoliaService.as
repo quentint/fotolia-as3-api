@@ -24,22 +24,15 @@ package net.tw.webapis.fotolia {
 		protected var _gotTags:Signal=new Signal(Array);
 		protected var _gotCountries:Signal=new Signal(Array);
 		//
-		protected var _fetchedData:Boolean=false;
-		protected var _data:Object={};
-		protected var _fetchedColors:Boolean=false;
-		protected var _colors:Array=[];
-		protected var _fetchedGalleries:Boolean=false;
-		protected var _galleries:Array=[];
+		protected var _data:Object;
+		protected var _colors:Array;
+		protected var _galleries:Array;
 		protected var _lastResults:FotoliaSearchResults;
-		protected var _fetchedTags:Boolean=false;
-		protected var _tags:Array=[];
-		protected var _fetchedCountries:Boolean=false;
-		protected var _countries:Array=[];
+		protected var _tags:Array;
+		protected var _countries:Array;
 		//
-		protected var _representativeCategories:Array=[];
-		protected var _fetchedRepresentativeCategories:Boolean=false;
-		protected var _conceptualCategories:Array=[];
-		protected var _fetchedConceptualCategories:Boolean=false;
+		protected var _representativeCategories:Array;
+		protected var _conceptualCategories:Array;
 		//
 		public static const BASE_URL:String='http://www.fotolia.com/';
 		public static const SIGN_UP_URL:String=BASE_URL+'Member/SignUp';
@@ -174,15 +167,7 @@ package net.tw.webapis.fotolia {
 			);
 		}
 		protected function onDataGot(o:Object):void {
-			_fetchedData=true;
 			_data=o;
-		}
-		/**
-		 * Boolean indicating if data has been fetched.
-		 * @see #getData()
-		 */
-		public function get fetchedData():Boolean {
-			return _fetchedData;
 		}
 		/**
 		 * Fetched Fotolia data.
@@ -212,15 +197,7 @@ package net.tw.webapis.fotolia {
 			);
 		}
 		protected function onColorsGot(a:Array):void {
-			_fetchedColors=true;
 			_colors=a;
-		}
-		/**
-		 * Boolean indicating if colors have been fetched.
-		 * @see #getColors()
-		 */
-		public function get fetchedColors():Boolean {
-			return _fetchedColors;
 		}
 		/**
 		 * Fetched Fotolia colors.
@@ -253,15 +230,7 @@ package net.tw.webapis.fotolia {
 			);
 		}
 		protected function onGalleriesGot(a:Array):void {
-			_fetchedGalleries=true;
 			_galleries=a;
-		}
-		/**
-		 * Boolean indicating if galleries have been fetched.
-		 * @see #getGalleries()
-		 */		
-		public function get fetchedGalleries():Boolean {
-			return _fetchedGalleries;
 		}
 		/**
 		 * Fetched Fotolia galleries.
@@ -302,10 +271,8 @@ package net.tw.webapis.fotolia {
 			var firstCat:FotoliaCategory=a[0];
 			if (firstCat.isRepresentative()) {
 				_representativeCategories=a;
-				_fetchedRepresentativeCategories=true;
 			} else {
 				_conceptualCategories=a;
-				_fetchedConceptualCategories=true;
 			}
 		}
 		/**
@@ -316,25 +283,11 @@ package net.tw.webapis.fotolia {
 			return _representativeCategories;
 		}
 		/**
-		 * Boolean indicating if representative categories have been fetched.
-		 * @see #getCategories()
-		 */
-		public function get fetchedRepresentativeCategories():Boolean {
-			return _fetchedRepresentativeCategories;
-		}
-		/**
 		 * Fetched conceptual categories.
 		 * @see #getCategories()
 		 */
 		public function get conceptualCategories():Array {
 			return _conceptualCategories;
-		}
-		/**
-		 * Boolean indicating if conceptual categories have been fetched.
-		 * @see #getCategories()
-		 */
-		public function get fetchedConceptualCategories():Boolean {
-			return _fetchedConceptualCategories;
 		}
 		/**
 		 * Signal dispatched after a search call.
@@ -395,15 +348,7 @@ package net.tw.webapis.fotolia {
 			);
 		}
 		protected function onTagsGot(a:Array):void {
-			_fetchedTags=true;
 			_tags=a;
-		}
-		/**
-		 * Boolean indicating if tags have been fetched.
-		 * @see #getTags()
-		 */
-		public function get fetchedTags():Boolean {
-			return _fetchedTags;
 		}
 		/**
 		 * Fetched Fotolia tags.
@@ -434,15 +379,7 @@ package net.tw.webapis.fotolia {
 			);
 		}
 		protected function onCountriesGot(a:Array):void {
-			_fetchedCountries=true;
 			_countries=a;
-		}
-		/**
-		 * Boolean indicating if countries have been fetched.
-		 * @see #getCountries()
-		 */
-		public function get fetchedCountries():Boolean {
-			return _fetchedCountries;
 		}
 		/**
 		 * Fetched countries.

@@ -1,8 +1,10 @@
 package net.tw.webapis.fotolia {
-	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
 	import flash.geom.Point;
-	import org.osflash.signals.Signal;
+	
+	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
 	import net.tw.webapis.fotolia.util.DataParser;
+	
+	import org.osflash.signals.Signal;
 	/**
 	 * Represents a Fotolia media.
 	 */
@@ -14,6 +16,8 @@ package net.tw.webapis.fotolia {
 		protected var _purchased:Signal=new Signal(String, FotoliaMedia);
 		//
 		protected var _fetchedData:Boolean=false;
+		protected var _comp:Object;
+		protected var _downloadURL:String;
 		//
 		public static const SIZE_SMALL:uint=30;
 		public static const SIZE_MEDIUM:uint=110;
@@ -53,6 +57,8 @@ package net.tw.webapis.fotolia {
 			super(pService);
 			_props=pProps;
 			_internalGotData.add(onGotData);
+			gotComp.add(onCompGot);
+			purchased.add(onPurchased);
 		}
 		/**
 		 * Signal dispatched after a getData call.
@@ -145,6 +151,12 @@ package net.tw.webapis.fotolia {
 			);
 			return true;
 		}
+		protected function onCompGot(o:Object, tg:FotoliaMedia):void {
+			_comp=o;
+		}
+		public function get comp():Object {
+			return _comp;
+		}
 		/**
 		 * Signal dispatched after a purchse call.
 		 * Listeners will receive 2 arguments: a String (the download URL) and the target FotoliaMedia.
@@ -168,6 +180,12 @@ package net.tw.webapis.fotolia {
 				DataParser.purchaseHandler,
 				[this]
 			);
+		}
+		protected function onPurchased(u:String, th:FotoliaMedia):void {
+			_downloadURL=u;
+		}
+		public function get downloadURL():String {
+			return _downloadURL;
 		}
 		/**
 		 * Media's ID.

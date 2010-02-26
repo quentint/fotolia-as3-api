@@ -15,8 +15,7 @@ package net.tw.webapis.fotolia {
 		protected var _type:uint;
 		protected var _langID:uint;
 		protected var _parent:FotoliaCategory;
-		protected var _categories:Array=[];
-		protected var _fetchedCategories:Boolean=false;
+		protected var _categories:Array;
 		//
 		protected var _gotCategories:Signal=new Signal(Array, FotoliaCategory);
 		/**
@@ -139,7 +138,6 @@ package net.tw.webapis.fotolia {
 		}
 		protected function onCategoriesGot(a:Array, c:FotoliaCategory):void {
 			_categories=a;
-			_fetchedCategories=true;
 		}
 		/**
 		 * Returns an Array of sub-categories for this category, if any.
@@ -147,12 +145,6 @@ package net.tw.webapis.fotolia {
 		 */
 		public function get categories():Array {
 			return _categories;
-		}
-		/**
-		 * Boolean indicating if sub-galleries have been fetched.
-		 */
-		public function fetchedCategories():Boolean {
-			return _fetchedCategories;
 		}
 	}
 }
