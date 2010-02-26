@@ -5,10 +5,14 @@ package net.tw.webapis.fotolia {
 	import net.tw.webapis.fotolia.util.DataParser;
 	
 	import org.osflash.signals.Signal;
+	import flash.utils.Dictionary;
+
 	/**
 	 * Represents a Fotolia media.
 	 */
 	public class FotoliaMedia extends FotoliaServiceRequester {
+		protected static var _serviceMediaDict:Dictionary=new Dictionary();
+		//
 		protected var _internalGotData:Signal=new Signal(Object);
 		protected var _gotData:Signal=new Signal(FotoliaMedia);
 		protected var _gotGalleries:Signal=new Signal(Array, FotoliaMedia);
@@ -59,6 +63,19 @@ package net.tw.webapis.fotolia {
 			_internalGotData.add(onGotData);
 			gotComp.add(onCompGot);
 			purchased.add(onPurchased);
+		}
+		public static function getFromProps(s:FotoliaService, p:Object):FotoliaMedia {
+			var medias:Object;
+			if (!_serviceMediaDict[s]) medias=_serviceMediaDict[s]={};
+			else medias=_serviceMediaDict[s];
+			//
+			if (medias[p.id]) {
+				medias[p.id].mergeProps(p);
+				return medias[p.id];
+			}
+			var m:FotoliaMedia=new FotoliaMedia(s, p);
+			medias[p.id]=m;
+			return m;
 		}
 		/**
 		 * Signal dispatched after a getData call.
