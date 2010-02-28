@@ -27,11 +27,10 @@ package net.tw.webapis.fotolia.abstract {
 									   args:Array,
 									   resultSignal:Signal,
 									   parser:Function=null,
-									   parserParams:Array=null):FotoliaServiceRequest {
+									   parserParams:Array=null):void {
 			var fsReq:FotoliaServiceRequest=new FotoliaServiceRequest(_service, method, args, resultSignal, parser, parserParams);
 			fsReq.showBusyCursor=_service.showBusyCursor;
 			fsReq.load();
-			return fsReq;
 		}
 	}
 }
