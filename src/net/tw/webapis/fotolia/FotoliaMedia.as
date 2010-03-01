@@ -33,10 +33,11 @@ package net.tw.webapis.fotolia {
 		public static const TYPE_VIDEO:uint=4;
 		//
 		/*
-		V_HD720 = 40
-		V_M = 20
-		V_NTSC = 30
-		V_S = 10
+		V_S
+		V_M
+		V_NTSC
+		V_HD720
+		V_HD1080
 		*/
 		public static const LICENSE_XS:String='XS';
 		public static const LICENSE_S:String='S';
@@ -48,6 +49,8 @@ package net.tw.webapis.fotolia {
 		public static const LICENSE_XV:String='XV';
 		//
 		public static const LICENSE_X:String='X';
+		//
+		public static const VIDEO_LICENSE_PREFIX:String='V_';
 		//
 		public static const METHOD_GET_MEDIA_DATA:String='xmlrpc.getMediaData';
 		public static const METHOD_GET_MEDIA_GALLERIES:String='xmlrpc.getMediaGalleries';
@@ -265,19 +268,23 @@ package net.tw.webapis.fotolia {
 		public function get licenses():Object {
 			return props.licenses;
 		}
+		protected function fixLicenseName(licenseName:String):String {
+			if (isVideo() && licenseName.substr(0, VIDEO_LICENSE_PREFIX.length)!=VIDEO_LICENSE_PREFIX) return VIDEO_LICENSE_PREFIX+licenseName;
+			return licenseName;
+		}
 		/**
 		 * Checks if this media is available for a given license, might require a getData call.
 		 * @see #licenses
 		 */
 		public function hasLicense(licenseName:String):Boolean {
-			return licenses.hasOwnProperty(licenseName);
+			return licenses.hasOwnProperty(fixLicenseName(licenseName));
 		}
 		/**
 		 * Checks if enough data has been fetched to get this media's licenses' details.
 		 * @see #licensesDetails
 		 */
 		public function hasLicenseDetails(licenseName:String):Boolean {
-			return licensesDetails.hasOwnProperty(licenseName);
+			return licensesDetails.hasOwnProperty(fixLicenseName(licenseName));
 		}
 		/**
 		 * Returns the price for a given license.
@@ -286,7 +293,7 @@ package net.tw.webapis.fotolia {
 		 */
 		public function getLicensePrice(licenseName:String):int {
 			if (!hasLicense(licenseName)) return -1;
-			return licenses[licenseName];
+			return licenses[fixLicenseName(licenseName)];
 		}
 		/**
 		 * Returns the details for a given license.
@@ -295,7 +302,7 @@ package net.tw.webapis.fotolia {
 		 */
 		public function getLicenseDetails(licenseName:String):* {
 			if (!hasLicenseDetails(licenseName)) return null;
-			return licensesDetails[licenseName];
+			return licensesDetails[fixLicenseName(licenseName)];
 		}
 		/**
 		 * Media's type ID, requires a getData() call.
