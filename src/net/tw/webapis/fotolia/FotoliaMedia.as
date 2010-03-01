@@ -6,6 +6,7 @@ package net.tw.webapis.fotolia {
 	
 	import org.osflash.signals.Signal;
 	import flash.utils.Dictionary;
+	import mx.utils.ObjectUtil;
 
 	/**
 	 * Represents a Fotolia media.
@@ -80,6 +81,16 @@ package net.tw.webapis.fotolia {
 			medias[p.id]=m;
 			return m;
 		}
+		override protected function mergeProps(o:Object):void {
+			if (o.hasOwnProperty('licenses')) {
+				var licenses:Object={};
+				for each(var l:Object in o.licenses) {
+					licenses[l.name]=l.price;
+				}
+				o.licenses=licenses;
+			}
+			super.mergeProps(o);
+		}
 		/**
 		 * Signal dispatched after a getData call.
 		 * Listeners will receive 1 argument: the current FotoliaMedia.
@@ -104,12 +115,6 @@ package net.tw.webapis.fotolia {
 			);
 		}
 		protected function onGotData(o:Object):void {
-			var licenses:Object={};
-			for each(var l:Object in o.licenses) {
-				licenses[l.name]=l.price;
-			}
-			o.licenses=licenses;
-			//
 			mergeProps(o);
 			_fetchedData=true;
 			gotData.dispatch(this);
