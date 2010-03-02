@@ -33,21 +33,21 @@ package net.tw.webapis.fotolia {
 		public static const TYPE_VECTOR:uint=3;
 		public static const TYPE_VIDEO:uint=4;
 		//
-		/*
-		V_S
-		V_M
-		V_NTSC
-		V_HD720
-		V_HD1080
-		*/
 		public static const LICENSE_XS:String='XS';
 		public static const LICENSE_S:String='S';
+		public static const LICENSE_M:String='M';
 		public static const LICENSE_L:String='L';
 		public static const LICENSE_XL:String='XL';
 		public static const LICENSE_XXL:String='XXL';
+		public static const LICENSE_XXXL:String='XXXL';
+		//
+		public static const LICENSE_NTSC:String='NTSC';
+		public static const LICENSE_PAL:String='PAL';
+		public static const LICENSE_HD780:String='HD780';
+		public static const LICENSE_HD1080:String='HD1080';
 		//
 		public static const LICENSE_V:String='V';
-		public static const LICENSE_XV:String='XV';
+		public static const LICENSE_VX:String='VX';
 		//
 		public static const LICENSE_X:String='X';
 		//
@@ -102,6 +102,7 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Remote getData call.
+		 * Valid thumbnailSize values are FotoliaMedia.SIZE_SMALL, FotoliaMedia.SIZE_MEDIUM and FotoliaMedia.SIZE_LARGE.
 		 * @param	thumbnailSize
 		 * @param	langID
 		 * @see		#gotData
@@ -110,9 +111,13 @@ package net.tw.webapis.fotolia {
 		public function getData(thumbnailSize:uint=110, langID:uint=0):void {
 			loadRequest(
 				METHOD_GET_MEDIA_DATA,
-				[key, id, thumbnailSize, _service.autoPickLang(langID)],
+				[key, id, fixThumbnailSize(thumbnailSize), _service.autoPickLang(langID)],
 				_internalGotData
 			);
+		}
+		protected function fixThumbnailSize(size:uint):uint {
+			if ([SIZE_SMALL, SIZE_MEDIUM, SIZE_LARGE].indexOf(size)==-1) return SIZE_MEDIUM;
+			return size;
 		}
 		protected function onGotData(o:Object):void {
 			mergeProps(o);
@@ -233,6 +238,15 @@ package net.tw.webapis.fotolia {
 		 */
 		public function get thumbnailURL():String {
 			return props.thumbnail_url;
+		}
+		/**
+		 * Media's thumbnail URL for a given size. Valid values are FotoliaMedia.SIZE_SMALL, FotoliaMedia.SIZE_MEDIUM and FotoliaMedia.SIZE_LARGE.
+		 * Based on thumbnailURL, same conditions apply.
+		 * @see #thumbnailURL
+		 */
+		public function getThumbnailURL(size:uint):String {
+			if (!thumbnailURL) return null;
+			return thumbnailURL.replace(/\/[0-9]{2,3}_/, '/'+fixThumbnailSize(size)+'_');
 		}
 		/**
 		 * Returns this media's URL on Fotolia's site.
