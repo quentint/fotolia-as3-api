@@ -4,7 +4,6 @@ package net.tw.webapis.fotolia {
 	import net.tw.webapis.fotolia.util.DataParser;
 	import org.osflash.signals.Signal;
 	import flash.utils.Dictionary;
-	import mx.utils.ObjectUtil;
 	/**
 	 * Represents a Fotolia media.
 	 */
@@ -20,7 +19,7 @@ package net.tw.webapis.fotolia {
 		protected var _fetchedData:Boolean=false;
 		protected var _comp:Object;
 		protected var _downloadURL:String;
-		protected var _thumbnailURLs:Dictionary=new Dictionary();
+		protected var _thumbnailURLs:Array=[];
 		//
 		public static const THUMBNAIL_SIZE_SMALL:uint=30;
 		public static const THUMBNAIL_SIZE_MEDIUM:uint=110;
