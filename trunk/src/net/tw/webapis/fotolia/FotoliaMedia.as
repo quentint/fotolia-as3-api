@@ -1,13 +1,10 @@
 package net.tw.webapis.fotolia {
 	import flash.geom.Point;
-	
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
 	import net.tw.webapis.fotolia.util.DataParser;
-	
 	import org.osflash.signals.Signal;
 	import flash.utils.Dictionary;
 	import mx.utils.ObjectUtil;
-
 	/**
 	 * Represents a Fotolia media.
 	 */
@@ -23,10 +20,11 @@ package net.tw.webapis.fotolia {
 		protected var _fetchedData:Boolean=false;
 		protected var _comp:Object;
 		protected var _downloadURL:String;
+		protected var _thumbnailURLs:Dictionary=new Dictionary();
 		//
-		public static const SIZE_SMALL:uint=30;
-		public static const SIZE_MEDIUM:uint=110;
-		public static const SIZE_LARGE:uint=400;
+		public static const THUMBNAIL_SIZE_SMALL:uint=30;
+		public static const THUMBNAIL_SIZE_MEDIUM:uint=110;
+		public static const THUMBNAIL_SIZE_LARGE:uint=400;
 		//
 		public static const TYPE_PHOTO:uint=1;
 		public static const TYPE_ILLUSTRATION:uint=2;
@@ -63,7 +61,7 @@ package net.tw.webapis.fotolia {
 		 */
 		public function FotoliaMedia(pService:FotoliaService, pProps:Object) {
 			super(pService);
-			_props=pProps;
+			mergeProps(pProps);
 			_internalGotData.add(onGotData);
 			gotComp.add(onCompGot);
 			purchased.add(onPurchased);
@@ -88,6 +86,10 @@ package net.tw.webapis.fotolia {
 					licenses[l.name]=l.price;
 				}
 				o.licenses=licenses;
+			}
+			if (o.hasOwnProperty('thumbnail_url')) {
+				var tnSize:String=String(o.thumbnail_url).split(/\/([0-9]{2,3})_/)[1];
+				_thumbnailURLs[int(tnSize)]=o.thumbnail_url;
 			}
 			super.mergeProps(o);
 		}
@@ -116,7 +118,7 @@ package net.tw.webapis.fotolia {
 			);
 		}
 		protected function fixThumbnailSize(size:uint):uint {
-			if ([SIZE_SMALL, SIZE_MEDIUM, SIZE_LARGE].indexOf(size)==-1) return SIZE_MEDIUM;
+			if ([THUMBNAIL_SIZE_SMALL, THUMBNAIL_SIZE_MEDIUM, THUMBNAIL_SIZE_LARGE].indexOf(size)==-1) return THUMBNAIL_SIZE_MEDIUM;
 			return size;
 		}
 		protected function onGotData(o:Object):void {
@@ -232,8 +234,25 @@ package net.tw.webapis.fotolia {
 			return props.title;
 		}
 		/**
-		 * Media's thumbnail URL, requires a getData call for a FotoliaCartMedia.
+		 * Media's latest thumbnail size, requires a getData call for a FotoliaCartMedia.
 		 * @see #getData()
+		 * @see FotoliaCartMedia
+		 */
+		public function get thumbnailSize():Point {
+			return new Point(props.thumbnail_width, props.thumbnail_height);
+		}
+		/**
+		 * Checks if the thumbnail URL for the given size has been fetched yet.
+		 * @see	#getData()
+		 * @see #thumbnailURL
+		 */
+		public function hasThumbnailURL(size:uint):Boolean {
+			return Boolean(_thumbnailURLs[size]);
+		}
+		/**
+		 * Media's latest thumbnail URL, requires a getData call for a FotoliaCartMedia.
+		 * @see #getData()
+		 * @see #getThumbnailURL()
 		 * @see FotoliaCartMedia
 		 */
 		public function get thumbnailURL():String {
@@ -241,12 +260,13 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Media's thumbnail URL for a given size. Valid values are FotoliaMedia.SIZE_SMALL, FotoliaMedia.SIZE_MEDIUM and FotoliaMedia.SIZE_LARGE.
-		 * Based on thumbnailURL, same conditions apply.
+		 * Might require a getData call with the appropriate size.
 		 * @see #thumbnailURL
+		 * @see #getData()
 		 */
 		public function getThumbnailURL(size:uint):String {
-			if (!thumbnailURL) return null;
-			return thumbnailURL.replace(/\/[0-9]{2,3}_/, '/'+fixThumbnailSize(size)+'_');
+			if (!hasThumbnailURL(size)) return null;
+			return _thumbnailURLs[size];
 		}
 		/**
 		 * Returns this media's URL on Fotolia's site.
@@ -269,14 +289,6 @@ package net.tw.webapis.fotolia {
 		 */
 		public function get creatorName():String {
 			return props.creator_name;
-		}
-		/**
-		 * Media's thumbnail size, requires a getData call for a FotoliaCartMedia.
-		 * @see #getData()
-		 * @see FotoliaCartMedia
-		 */
-		public function get thumbnailSize():Point {
-			return new Point(props.thumbnail_width, props.thumbnail_height);
 		}
 		/**
 		 * Media's available licenses, requires a getData call for a FotoliaCartMedia.
