@@ -204,6 +204,7 @@ package net.tw.webapis.fotolia {
 		 * @see		http://us.fotolia.com/Services/API/Method/getMedia
 		 */
 		public function purchase(sessionID:String, licenseName:String):void {
+			licenseName=FotoliaMedia.fixLicenseName(this, licenseName);
 			loadRequest(
 				METHOD_GET_MEDIA,
 				[key, sessionID, id, licenseName],
@@ -298,8 +299,8 @@ package net.tw.webapis.fotolia {
 		public function get licenses():Object {
 			return props.licenses;
 		}
-		protected function fixLicenseName(licenseName:String):String {
-			if (isVideo() && licenseName.substr(0, VIDEO_LICENSE_PREFIX.length)!=VIDEO_LICENSE_PREFIX) return VIDEO_LICENSE_PREFIX+licenseName;
+		public static function fixLicenseName(m:FotoliaMedia, licenseName:String):String {
+			if (m.isVideo() && licenseName.substr(0, VIDEO_LICENSE_PREFIX.length)!=VIDEO_LICENSE_PREFIX) return VIDEO_LICENSE_PREFIX+licenseName;
 			return licenseName;
 		}
 		/**
@@ -307,14 +308,14 @@ package net.tw.webapis.fotolia {
 		 * @see #licenses
 		 */
 		public function hasLicense(licenseName:String):Boolean {
-			return licenses.hasOwnProperty(fixLicenseName(licenseName));
+			return licenses.hasOwnProperty(fixLicenseName(this, licenseName));
 		}
 		/**
 		 * Checks if enough data has been fetched to get this media's licenses' details.
 		 * @see #licensesDetails
 		 */
 		public function hasLicenseDetails(licenseName:String):Boolean {
-			return licensesDetails.hasOwnProperty(fixLicenseName(licenseName));
+			return licensesDetails.hasOwnProperty(fixLicenseName(this, licenseName));
 		}
 		/**
 		 * Returns the price for a given license.
@@ -323,7 +324,7 @@ package net.tw.webapis.fotolia {
 		 */
 		public function getLicensePrice(licenseName:String):int {
 			if (!hasLicense(licenseName)) return -1;
-			return licenses[fixLicenseName(licenseName)];
+			return licenses[fixLicenseName(this, licenseName)];
 		}
 		/**
 		 * Returns the details for a given license.
@@ -332,7 +333,7 @@ package net.tw.webapis.fotolia {
 		 */
 		public function getLicenseDetails(licenseName:String):* {
 			if (!hasLicenseDetails(licenseName)) return null;
-			return licensesDetails[fixLicenseName(licenseName)];
+			return licensesDetails[fixLicenseName(this, licenseName)];
 		}
 		/**
 		 * Media's type ID, requires a getData() call.
