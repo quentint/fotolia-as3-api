@@ -15,12 +15,14 @@ package net.tw.webapis.fotolia {
 		protected var _removedMedia:Signal=new Signal(FotoliaShoppingCart);
 		protected var _cleared:Signal=new Signal(FotoliaShoppingCart);
 		protected var _transferredToLightBox:Signal=new Signal(FotoliaShoppingCart);
+		protected var _updated:Signal=new Signal(FotoliaShoppingCart);
 		//
 		public static const METHOD_SHOPPING_CART_GET_LIST:String='shoppingcart.getList';
 		public static const METHOD_SHOPPING_CART_ADD:String='shoppingcart.add';
 		public static const METHOD_SHOPPING_CART_REMOVE:String='shoppingcart.remove';
 		public static const METHOD_SHOPPING_CART_CLEAR:String='shoppingcart.clear';
 		public static const METHOD_SHOPPING_CART_TRANSFER_TO_LIGHTBOX:String='shoppingcart.transferToLightbox';
+		public static const METHOD_SHOPPING_CART_UPDATE:String='shoppingcart.update';
 		/**
 		 * @param	pService	Used for its API key and fault handler
 		 * @param	pUser		The user linked to this shopping cart
@@ -180,6 +182,28 @@ package net.tw.webapis.fotolia {
 				METHOD_SHOPPING_CART_TRANSFER_TO_LIGHTBOX,
 				[key, user.sessionID, mediaID],
 				transferredToLightbox,
+				DataParser.targetHandler,
+				[this]
+			);
+		}
+		/**
+		 * Signal dispatched after an update call.
+		 * Listeners will receive 1 argument: the target FotoliaShoppingCart.
+		 * @see #update()
+		 */
+		public function get updated():Signal {
+			return _updated;
+		}
+		/**
+		 * Remote update call.
+		 * @see #updated
+		 * @see http://us.fotolia.com/Services/API/Method/shoppingcart_update
+		 */
+		public function update(mediaID:uint, licenseName:String):void {
+			loadRequest(
+				METHOD_SHOPPING_CART_UPDATE,
+				[key, user.sessionID, mediaID, licenseName],
+				updated,
 				DataParser.targetHandler,
 				[this]
 			);
