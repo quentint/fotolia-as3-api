@@ -20,6 +20,7 @@ package net.tw.webapis.fotolia {
 		protected var _comp:Object;
 		protected var _downloadURL:String;
 		protected var _thumbnailURLs:Array=[];
+		protected var _purchaseLicenseName:String;
 		//
 		public static const THUMBNAIL_SIZE_SMALL:uint=30;
 		public static const THUMBNAIL_SIZE_MEDIUM:uint=110;
@@ -54,6 +55,10 @@ package net.tw.webapis.fotolia {
 		public static const METHOD_GET_MEDIA_GALLERIES:String='xmlrpc.getMediaGalleries';
 		public static const METHOD_GET_MEDIA_COMP:String='xmlrpc.getMediaComp';
 		public static const METHOD_GET_MEDIA:String='xmlrpc.getMedia';
+		//
+		public static const LOCAL_FILENAME_PREFIX:String='fotolia_';
+		public static const LOCAL_FILENAME_SEPARATOR:String='_';
+		//
 		/**
 		 * @param	pService	Used for its API key and fault handler
 		 * @param	pProps		Random properties to be passed-in
@@ -78,11 +83,16 @@ package net.tw.webapis.fotolia {
 			medias[p.id]=m;
 			return m;
 		}
+		public static function getFromID(s:FotoliaService, id:uint):FotoliaMedia {
+			return getFromProps(s, {id:id});
+		}
 		override protected function mergeProps(o:Object):void {
+			//trace(mx.utils.ObjectUtil.toString(o));
+			super.mergeProps(o);
 			if (o.hasOwnProperty('licenses')) {
 				var licenses:Object={};
 				for each(var l:Object in o.licenses) {
-					licenses[l.name]=l.price;
+					licenses[fixLicenseName(l.name)]=l.price;
 				}
 				o.licenses=licenses;
 			}
@@ -204,7 +214,8 @@ package net.tw.webapis.fotolia {
 		 * @see		http://us.fotolia.com/Services/API/Method/getMedia
 		 */
 		public function purchase(sessionID:String, licenseName:String):void {
-			licenseName=FotoliaMedia.fixLicenseName(this, licenseName);
+			//licenseName=FotoliaMedia.fixLicenseName(this, licenseName);
+			_purchaseLicenseName=licenseName;
 			loadRequest(
 				METHOD_GET_MEDIA,
 				[key, sessionID, id, licenseName],
@@ -212,6 +223,9 @@ package net.tw.webapis.fotolia {
 				DataParser.purchaseHandler,
 				[this]
 			);
+		}
+		public function get purchaseLicenseName():String {
+			return _purchaseLicenseName;
 		}
 		protected function onPurchased(u:String, th:FotoliaMedia):void {
 			_downloadURL=u;
@@ -299,23 +313,27 @@ package net.tw.webapis.fotolia {
 		public function get licenses():Object {
 			return props.licenses;
 		}
-		public static function fixLicenseName(m:FotoliaMedia, licenseName:String):String {
+		public function fixLicenseName(s:String):String {
+			if (isVideo() && s.substr(0, VIDEO_LICENSE_PREFIX.length)!=VIDEO_LICENSE_PREFIX) return VIDEO_LICENSE_PREFIX+s;
+			return s;
+		}
+		/*public static function fixLicenseName(m:FotoliaMedia, licenseName:String):String {
 			if (m.isVideo() && licenseName.substr(0, VIDEO_LICENSE_PREFIX.length)!=VIDEO_LICENSE_PREFIX) return VIDEO_LICENSE_PREFIX+licenseName;
 			return licenseName;
-		}
+		}*/
 		/**
 		 * Checks if this media is available for a given license, might require a getData call.
 		 * @see #licenses
 		 */
 		public function hasLicense(licenseName:String):Boolean {
-			return licenses.hasOwnProperty(fixLicenseName(this, licenseName));
+			return licenses && licenses.hasOwnProperty(fixLicenseName(licenseName));
 		}
 		/**
 		 * Checks if enough data has been fetched to get this media's licenses' details.
 		 * @see #licensesDetails
 		 */
 		public function hasLicenseDetails(licenseName:String):Boolean {
-			return licensesDetails.hasOwnProperty(fixLicenseName(this, licenseName));
+			return licensesDetails && licensesDetails.hasOwnProperty(fixLicenseName(licenseName));
 		}
 		/**
 		 * Returns the price for a given license.
@@ -324,7 +342,7 @@ package net.tw.webapis.fotolia {
 		 */
 		public function getLicensePrice(licenseName:String):int {
 			if (!hasLicense(licenseName)) return -1;
-			return licenses[fixLicenseName(this, licenseName)];
+			return licenses[fixLicenseName(licenseName)];
 		}
 		/**
 		 * Returns the details for a given license.
@@ -333,7 +351,7 @@ package net.tw.webapis.fotolia {
 		 */
 		public function getLicenseDetails(licenseName:String):* {
 			if (!hasLicenseDetails(licenseName)) return null;
-			return licensesDetails[fixLicenseName(this, licenseName)];
+			return licensesDetails[fixLicenseName(licenseName)];
 		}
 		/**
 		 * Media's type ID, requires a getData() call.
@@ -414,6 +432,13 @@ package net.tw.webapis.fotolia {
 			return props.cat2_hierarchy;
 		}
 		/**
+		 * Media's preview FLV URL, only valid for videos, might require a getData call.
+		 * @see #getData()
+		 */
+		public function get flvURL():String {
+			return props.flv_url;
+		}
+		/**
 		 * Indicates if this media is a photo.
 		 * @see #TYPE_PHOTO
 		 */
@@ -445,6 +470,26 @@ package net.tw.webapis.fotolia {
 			if (isPhoto() || isIllustration()) return 'jpg';
 			//if (isVector()) return 'xxx';
 			return 'xxx';
+		}
+		public function getLocalCompFileName():String {
+			return LOCAL_FILENAME_PREFIX+id+'.'+extension;
+		}
+		public function getLocalFileName(licenseName:String):String {
+			return LOCAL_FILENAME_PREFIX+id+LOCAL_FILENAME_SEPARATOR+licenseName+'.'+extension;
+		}
+		public function getPurchaseLocalFileName():String {
+			return getLocalFileName(purchaseLicenseName);
+		}
+		public static function fileNameMatchesLocalMedia(s:String):Boolean {
+			return extractMediaIDFromLocalMedia(s)!=0;
+		}
+		public static function extractMediaIDFromLocalMedia(s:String):uint {
+			if (s.indexOf(LOCAL_FILENAME_PREFIX)!=0) return 0;
+			var fn:String=s.split('.')[0];
+			var parts:Array=fn.replace(LOCAL_FILENAME_PREFIX, '').split(LOCAL_FILENAME_SEPARATOR);
+			var matches:Array=String(parts[0]).match(/^[0-9]+$/);
+			if (!matches) return 0;
+			return uint(matches[0]);
 		}
 	}
 }

@@ -19,6 +19,9 @@ package net.tw.webapis.fotolia {
 		public function get licenseName():String {
 			return _licenseName;
 		}
+		public function get screenLicenseName():String {
+			return licenseName.substr(0, FotoliaMedia.VIDEO_LICENSE_PREFIX.length)==FotoliaMedia.VIDEO_LICENSE_PREFIX ? licenseName.substr(FotoliaMedia.VIDEO_LICENSE_PREFIX.length) : licenseName;
+		}
 		public function get media():FotoliaMedia {
 			return _media;
 		}
