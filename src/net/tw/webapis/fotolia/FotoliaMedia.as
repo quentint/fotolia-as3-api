@@ -126,7 +126,7 @@ package net.tw.webapis.fotolia {
 				_internalGotData
 			);
 		}
-		protected function fixThumbnailSize(size:uint):uint {
+		public static function fixThumbnailSize(size:uint):uint {
 			if ([THUMBNAIL_SIZE_SMALL, THUMBNAIL_SIZE_MEDIUM, THUMBNAIL_SIZE_LARGE].indexOf(size)==-1) return THUMBNAIL_SIZE_MEDIUM;
 			return size;
 		}

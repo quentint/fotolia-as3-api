@@ -304,12 +304,12 @@ package net.tw.webapis.fotolia {
 		 * @see		FotoliaSearchResults
 		 * @see		http://us.fotolia.com/Services/API/Method/getSearchResults
 		 */
-		public function search(params:Object):void {
-			params.language_id=autoPickLang(params.language_id);
+		public function search(query:FotoliaSearchQuery):void {
+			query.langID=autoPickLang(query.langID);
 			//
 			loadRequest(
 				METHOD_GET_SEARCH_RESULTS,
-				[key, params],
+				[key, query.searchParams],
 				searched,
 				DataParser.objectToSearchResults,
 				[this]
