@@ -21,15 +21,20 @@ package net.tw.webapis.fotolia {
 		public var order:String=FotoliaService.SEARCH_ORDER_RELEVANCE;
 		public var thumbnailSize:uint=FotoliaMedia.THUMBNAIL_SIZE_MEDIUM;
 		public var details:Boolean;
-		public function FotoliaSearchQuery(pWords:String='') {
+		//
+		public var representativeCategoryID:uint;
+		public var conceptualCategoryID:uint;
+		public var galleryID:uint;
+		//
+		public function FotoliaSearchQuery(pWords:String=null) {
 			words=pWords;
 		}
 		public function get searchParams():Object {
 			var o:Object={};
-			o.words=words;
-			o.offset=offset;
-			o.limit=Math.min(limit, FotoliaService.SEARCH_MAX_LIMIT);
-			o.order=order;
+			if (words)	o.words=words;
+			if (offset)	o.offset=offset;
+			if (limit)	o.limit=Math.min(limit, FotoliaService.SEARCH_MAX_LIMIT);
+			if (order)	o.order=order;
 			//
 			var filters:Object={};
 			if (filterOrientation)		filters['orientation']=1;
@@ -52,6 +57,10 @@ package net.tw.webapis.fotolia {
 			//
 			o.thumbnail_size=FotoliaMedia.fixThumbnailSize(thumbnailSize);
 			if (details) o.detail_level=1;
+			//
+			if (representativeCategoryID)	o.cat1_id=representativeCategoryID;
+			if (conceptualCategoryID)		o.cat2_id=conceptualCategoryID;
+			if (galleryID)					o.gallery_id=galleryID;
 			//
 			return o;
 		}
