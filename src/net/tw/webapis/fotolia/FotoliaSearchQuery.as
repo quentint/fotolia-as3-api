@@ -37,7 +37,7 @@ package net.tw.webapis.fotolia {
 			if (order)	o.order=order;
 			//
 			var filters:Object={};
-			if (filterOrientation)		filters['orientation']=1;
+			if (filterOrientation)		filters['orientation']=filterOrientation;
 			if (filterPanoramic)		filters['panoramic:on']=1;
 			if (filterIsolated)			filters['isolated:on']=1;
 			//
