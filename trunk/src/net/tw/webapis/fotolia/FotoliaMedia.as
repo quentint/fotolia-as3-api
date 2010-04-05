@@ -1,9 +1,11 @@
 package net.tw.webapis.fotolia {
 	import flash.geom.Point;
+	import flash.utils.Dictionary;
+	
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
 	import net.tw.webapis.fotolia.util.DataParser;
+	
 	import org.osflash.signals.Signal;
-	import flash.utils.Dictionary;
 	/**
 	 * Represents a Fotolia media.
 	 */
@@ -317,10 +319,9 @@ package net.tw.webapis.fotolia {
 			if (isVideo() && s.substr(0, VIDEO_LICENSE_PREFIX.length)!=VIDEO_LICENSE_PREFIX) return VIDEO_LICENSE_PREFIX+s;
 			return s;
 		}
-		/*public static function fixLicenseName(m:FotoliaMedia, licenseName:String):String {
-			if (m.isVideo() && licenseName.substr(0, VIDEO_LICENSE_PREFIX.length)!=VIDEO_LICENSE_PREFIX) return VIDEO_LICENSE_PREFIX+licenseName;
-			return licenseName;
-		}*/
+		public static function stripLicensePrefix(licenseName:String):String {
+			return licenseName.indexOf(VIDEO_LICENSE_PREFIX)==0 ? licenseName.substr(VIDEO_LICENSE_PREFIX.length) : licenseName;
+		}
 		/**
 		 * Checks if this media is available for a given license, might require a getData call.
 		 * @see #licenses
