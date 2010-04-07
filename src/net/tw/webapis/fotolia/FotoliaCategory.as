@@ -88,7 +88,7 @@ package net.tw.webapis.fotolia {
 		 * @see #rawName
 		 */
 		public function get name():String {
-			return rawName.replace('&amp;', '&');
+			return cleanName(rawName);
 		}
 		/**
 		 * Category's ID
@@ -145,6 +145,9 @@ package net.tw.webapis.fotolia {
 		 */
 		public function get categories():Array {
 			return _categories;
+		}
+		public static function cleanName(s:String):String {
+			return s.replace('&amp;', '&');
 		}
 	}
 }
