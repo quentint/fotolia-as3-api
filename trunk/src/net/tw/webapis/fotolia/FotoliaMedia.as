@@ -98,6 +98,19 @@ package net.tw.webapis.fotolia {
 				}
 				o.licenses=licenses;
 			}
+			// Let's clean those names, and store the raw values, just in case...
+			if (o.hasOwnProperty('cat1_hierarchy')) {
+				(o.cat1_hierarchy as Array).forEach(function(item:Object, index:int, ar:Array):void {
+					o.cat1_hierarchy[index].rawName=item.name;
+					o.cat1_hierarchy[index].name=FotoliaCategory.cleanName(item.name);
+				});
+			}
+			if (o.hasOwnProperty('cat2_hierarchy')) {
+				(o.cat2_hierarchy as Array).forEach(function(item:Object, index:int, ar:Array):void {
+					o.cat2_hierarchy[index].rawName=item.name;
+					o.cat2_hierarchy[index].name=FotoliaCategory.cleanName(item.name);
+				});
+			}
 			if (o.hasOwnProperty('thumbnail_url')) {
 				var tnSize:String=String(o.thumbnail_url).split(/\/([0-9]{2,3})_/)[1];
 				_thumbnailURLs[int(tnSize)]=o.thumbnail_url;
@@ -405,18 +418,32 @@ package net.tw.webapis.fotolia {
 			return props.licenses_details;
 		}
 		/**
+		 * Media's licenses details, in an Array, with additional nbCredits property, sorted by credits.
+		 * @see #licensesDetails
+		 */
+		public function get licensesDetailsArray():Array {
+			var a:Array=[];
+			var license:Object;
+			for each(license in licensesDetails) {
+				license.nbCredits=getLicensePrice(license.license_name);
+				a.push(license);
+			}
+			a.sortOn('nbCredits', Array.NUMERIC);
+			return a;
+		}
+		/**
 		 * Media's representative category, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get representativeCategory():Object {
-			return props.cat1;
+			return FotoliaCategory.cleanName(props.cat1);
 		}
 		/**
 		 * Media's conceptual category, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get conceptualCategory():Object {
-			return props.cat2;
+			return FotoliaCategory.cleanName(props.cat2);
 		}
 		/**
 		 * Media's representative category hierachy, requires a getData() call.
