@@ -432,6 +432,30 @@ package net.tw.webapis.fotolia {
 			return a;
 		}
 		/**
+		 * Media's licenses names and nbCredits in an Array, sorted by credits.
+		 * @see #licenses
+		 */
+		public function get licensesArray():Array {
+			var a:Array=[];
+			var licenseName:String;
+			for (licenseName in licenses) {
+				a.push({name:stripLicensePrefix(licenseName), nbCredits:licenses[licenseName]});
+			}
+			a.sortOn('nbCredits', Array.NUMERIC);
+			return a;
+		}
+		/**
+		 * Media's available license names in an Array, sorted by credits.
+		 * @see #licenses
+		 */
+		public function get licensesScreenNames():Array {
+			var a:Array=licensesArray;
+			for (var i:int=0; i<a.length; i++) {
+				a[i]=a[i].name;
+			}
+			return a;
+		}
+		/**
 		 * Media's representative category, requires a getData() call.
 		 * @see #getData()
 		 */
