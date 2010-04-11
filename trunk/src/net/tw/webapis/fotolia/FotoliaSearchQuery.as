@@ -26,6 +26,8 @@ package net.tw.webapis.fotolia {
 		public var conceptualCategoryID:uint;
 		public var galleryID:uint;
 		//
+		public var creatorID:uint;
+		//
 		public function FotoliaSearchQuery(pWords:String=null) {
 			words=pWords;
 		}
@@ -61,6 +63,8 @@ package net.tw.webapis.fotolia {
 			if (representativeCategoryID)	o.cat1_id=representativeCategoryID;
 			if (conceptualCategoryID)		o.cat2_id=conceptualCategoryID;
 			if (galleryID)					o.gallery_id=galleryID;
+			//
+			if (creatorID)					o.creator_id=creatorID;
 			//
 			return o;
 		}
