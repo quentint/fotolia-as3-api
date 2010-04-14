@@ -24,7 +24,7 @@ package net.tw.webapis.fotolia {
 		//
 		public var representativeCategoryID:uint;
 		public var conceptualCategoryID:uint;
-		public var galleryID:uint;
+		public var galleryID:String;
 		//
 		public var creatorID:uint;
 		//
