@@ -287,6 +287,9 @@ package net.tw.webapis.fotolia {
 		public function get thumbnailURL():String {
 			return props.thumbnail_url;
 		}
+		public static function computeMediumThumbnailURLToLarge(mediumThumbnailURL:String):String {
+			return mediumThumbnailURL.replace('/110_', '/400_');
+		}
 		/**
 		 * Media's thumbnail URL for a given size. Valid values are FotoliaMedia.SIZE_SMALL, FotoliaMedia.SIZE_MEDIUM and FotoliaMedia.SIZE_LARGE.
 		 * Might require a getData call with the appropriate size.
