@@ -39,6 +39,10 @@ package net.tw.webapis.fotolia {
 		public function get thumbnailURL():String {
 			return props.thumbnail_url;
 		}
+		public function get largeThumbnailURL():String {
+			if (!thumbnailURL) return null;
+			return FotoliaMedia.computeMediumThumbnailURLToLarge(thumbnailURL);
+		}
 		/**
 		 * Gallery's thumbnail size.
 		 */
