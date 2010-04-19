@@ -2,10 +2,13 @@ package net.tw.webapis.fotolia {
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	
+	import mx.utils.ObjectUtil;
+	
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
 	import net.tw.webapis.fotolia.util.DataParser;
 	
 	import org.osflash.signals.Signal;
+
 	/**
 	 * Represents a Fotolia media.
 	 */
@@ -23,6 +26,9 @@ package net.tw.webapis.fotolia {
 		protected var _downloadURL:String;
 		protected var _thumbnailURLs:Array=[];
 		protected var _purchaseLicenseName:String;
+		//
+		protected var _representativeCategoryHierarchy:Array;
+		protected var _conceptualCategoryHierarchy:Array;
 		//
 		public static const THUMBNAIL_SIZE_SMALL:uint=30;
 		public static const THUMBNAIL_SIZE_MEDIUM:uint=110;
@@ -89,7 +95,6 @@ package net.tw.webapis.fotolia {
 			return getFromProps(s, {id:id});
 		}
 		override protected function mergeProps(o:Object):void {
-			//trace(mx.utils.ObjectUtil.toString(o));
 			super.mergeProps(o);
 			if (o.hasOwnProperty('licenses')) {
 				var licenses:Object={};
@@ -98,17 +103,30 @@ package net.tw.webapis.fotolia {
 				}
 				o.licenses=licenses;
 			}
-			// Let's clean those names, and store the raw values, just in case...
+			var catProps:Object;
+			var cat:FotoliaCategory;
+			var prevCat:FotoliaCategory;
 			if (o.hasOwnProperty('cat1_hierarchy')) {
+				_representativeCategoryHierarchy=[];
 				(o.cat1_hierarchy as Array).forEach(function(item:Object, index:int, ar:Array):void {
-					o.cat1_hierarchy[index].rawName=item.name;
-					o.cat1_hierarchy[index].name=FotoliaCategory.cleanName(item.name);
+					catProps=o.cat1_hierarchy[index];
+					if (index==ar.length-1) catProps.nb_sub_categories=0;
+					cat=FotoliaCategory.getFromProps(_service, catProps, FotoliaCategory.TYPE_REPRESENTATIVE);
+					cat.parent=prevCat;
+					_representativeCategoryHierarchy.push(cat);
+					prevCat=cat;
 				});
 			}
+			prevCat=null;
 			if (o.hasOwnProperty('cat2_hierarchy')) {
+				_conceptualCategoryHierarchy=[];
 				(o.cat2_hierarchy as Array).forEach(function(item:Object, index:int, ar:Array):void {
-					o.cat2_hierarchy[index].rawName=item.name;
-					o.cat2_hierarchy[index].name=FotoliaCategory.cleanName(item.name);
+					catProps=o.cat2_hierarchy[index];
+					if (index==ar.length-1) catProps.nb_sub_categories=0;
+					cat=FotoliaCategory.getFromProps(_service, catProps, FotoliaCategory.TYPE_CONCEPTUAL);
+					cat.parent=prevCat;
+					_conceptualCategoryHierarchy.push(cat);
+					prevCat=cat;
 				});
 			}
 			if (o.hasOwnProperty('thumbnail_url')) {
@@ -463,28 +481,32 @@ package net.tw.webapis.fotolia {
 		 * @see #getData()
 		 */
 		public function get representativeCategory():Object {
-			return FotoliaCategory.cleanName(props.cat1);
+			//return FotoliaCategory.cleanName(props.cat1);
+			return FotoliaCategory.getFromProps(_service, props.cat1, FotoliaCategory.TYPE_REPRESENTATIVE);
 		}
 		/**
 		 * Media's conceptual category, requires a getData() call.
 		 * @see #getData()
 		 */
-		public function get conceptualCategory():Object {
-			return FotoliaCategory.cleanName(props.cat2);
+		public function get conceptualCategory():FotoliaCategory {
+			//return FotoliaCategory.cleanName(props.cat2);
+			return FotoliaCategory.getFromProps(_service, props.cat2, FotoliaCategory.TYPE_CONCEPTUAL);
 		}
 		/**
 		 * Media's representative category hierachy, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get representativeCategoryHierarchy():Array {
-			return props.cat1_hierarchy;
+			//return props.cat1_hierarchy;
+			return _representativeCategoryHierarchy;
 		}
 		/**
 		 * Media's conceptual category hierarchy, requires a getData() call.
 		 * @see #getData()
 		 */
 		public function get conceptualCategoryHierarchy():Array {
-			return props.cat2_hierarchy;
+			//return props.cat2_hierarchy;
+			return _conceptualCategoryHierarchy;
 		}
 		/**
 		 * Media's preview FLV URL, only valid for videos, might require a getData call.

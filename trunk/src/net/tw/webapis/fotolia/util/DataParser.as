@@ -1,6 +1,7 @@
 package net.tw.webapis.fotolia.util {
-	import net.tw.webapis.fotolia.*;
 	import mx.utils.ObjectUtil;
+	
+	import net.tw.webapis.fotolia.*;
 	/**
 	 * Utility class to convert Objects to Fotolia specific types.
 	 */
@@ -65,8 +66,12 @@ package net.tw.webapis.fotolia.util {
 		}
 		public static function objectToCategories(o:Object, params:Array):* {
 			var cs:Array=[];
+			var cat:FotoliaCategory;
 			for each(var item:Object in o) {
-				cs.push(new FotoliaCategory(params[0], item, params[1], params[2], params[3]));
+				//cat=new FotoliaCategory(params[0], item, params[1]/*, params[2], params[3]*/);
+				cat=FotoliaCategory.getFromProps(params[0], item, params[1]/*, params[2], params[3]*/);
+				cat.parent=params[3];
+				cs.push(cat);
 			}
 			return params.length==4 ? {res:cs, target:params[3]} : cs;
 		}
