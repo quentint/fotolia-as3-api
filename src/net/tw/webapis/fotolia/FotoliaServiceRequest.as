@@ -58,6 +58,9 @@ package net.tw.webapis.fotolia {
 		}
 		protected function onCallFault(e:FaultEvent):void {
 			removeListeners();
+			// We handle error 120 (This media is not part of any galleries) a bit differently
+			if (e.fault.faultCode=='120') return;
+			//
 			_service.faulted.dispatch(_method, e, _args);
 		}
 		public function load():void {

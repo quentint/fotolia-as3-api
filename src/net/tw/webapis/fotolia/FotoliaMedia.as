@@ -2,6 +2,7 @@ package net.tw.webapis.fotolia {
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	
+	import mx.rpc.events.FaultEvent;
 	import mx.utils.ObjectUtil;
 	
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
@@ -29,6 +30,7 @@ package net.tw.webapis.fotolia {
 		//
 		protected var _representativeCategoryHierarchy:Array;
 		protected var _conceptualCategoryHierarchy:Array;
+		protected var _galleries:Array;
 		//
 		public static const THUMBNAIL_SIZE_SMALL:uint=30;
 		public static const THUMBNAIL_SIZE_MEDIUM:uint=110;
@@ -77,6 +79,16 @@ package net.tw.webapis.fotolia {
 			_internalGotData.add(onGotData);
 			gotComp.add(onCompGot);
 			purchased.add(onPurchased);
+			gotGalleries.addOnce(onGalleries);
+			//
+			pService.faulted.add(onFault);
+		}
+		protected function onFault(methodName:String, fe:FaultEvent, args:Array):void {
+			if (fe.fault.faultCode!='120') return;
+			// We handle error 120 (This media is not part of any galleries)
+			_galleries=[];
+			gotGalleries.remove(onGalleries);
+			gotGalleries.dispatch(_galleries, this);
 		}
 		public static function getFromProps(s:FotoliaService, p:Object):FotoliaMedia {
 			var medias:Object;
@@ -194,6 +206,12 @@ package net.tw.webapis.fotolia {
 				DataParser.arrayToGalleries,
 				[_service, this]
 			);
+		}
+		protected function onGalleries(galleries:Array, tg:FotoliaMedia):void {
+			_galleries=galleries;
+		}
+		public function get galleries():Array {
+			return _galleries;
 		}
 		/**
 		 * Boolean indicating if this media has a comp file.
