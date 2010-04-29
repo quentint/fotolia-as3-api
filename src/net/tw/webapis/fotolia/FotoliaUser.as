@@ -1,7 +1,9 @@
 package net.tw.webapis.fotolia {
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
-	import org.osflash.signals.Signal;
 	import net.tw.webapis.fotolia.util.DataParser;
+	
+	import org.osflash.signals.Signal;
+
 	/**
 	 * Represents a Fotolia user.
 	 */
@@ -113,6 +115,9 @@ package net.tw.webapis.fotolia {
 		public function get nbCredits():Number {
 			return props.nb_credits;
 		}
+		public function get nbCreditsLocalized():String {
+			return props.nb_credits_localized;
+		}
 		/**
 		 * User's credit value, requires a call to getData().
 		 * @see	#getData()
@@ -175,6 +180,34 @@ package net.tw.webapis.fotolia {
 		 */
 		public function get rankingRelative():uint {
 			return props.ranking_relative;
+		}
+		/**
+		 * Boolean indicating if the user has access to subscription, requires a call to getStats().
+		 * @see #getStats()
+		 */
+		public function get hasSubscription():Boolean {
+			return Boolean(props.has_subscription);
+		}
+		/**
+		 * User's subscription daily quota, requires a call to getStats().
+		 * @see #getStats()
+		 */
+		public function get subscriptionDailyQuota():* {
+			return (props.subscription_daily_quota);
+		}
+		/**
+		 * User's subscription downloads left, requires a call to getStats().
+		 * @see #getStats()
+		 */
+		public function get subscriptionNbDownloadsLeft():* {
+			return (props.subscription_nb_downloads_left);
+		}
+		/**
+		 * Boolean indicating if user's subscription is premium, requires a call to getStats().
+		 * @see #getStats()
+		 */
+		public function get subscriptionIsPremium():* {
+			return props.subscription_is_premium;
 		}
 		/**
 		 * User's shopping cart.
