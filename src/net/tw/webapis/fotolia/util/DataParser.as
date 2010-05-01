@@ -91,7 +91,7 @@ package net.tw.webapis.fotolia.util {
 			return {target:params[0]};
 		}
 		public static function purchaseHandler(o:Object, params:Array):Object {
-			return {res:firstObjectItemToObject(o), target:params[0]};
+			return {res:o, target:params[0]};
 		}
 		/*public static function targetSuccessStringObjectToBoolean(o:Object, params:Array):Object {
 			return {res:successStringObjectToBoolean(o), target:params[0]};
