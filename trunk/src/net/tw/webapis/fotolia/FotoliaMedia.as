@@ -20,11 +20,13 @@ package net.tw.webapis.fotolia {
 		protected var _gotData:Signal=new Signal(FotoliaMedia);
 		protected var _gotGalleries:Signal=new Signal(Array, FotoliaMedia);
 		protected var _gotComp:Signal=new Signal(Object, FotoliaMedia);
-		protected var _purchased:Signal=new Signal(String, FotoliaMedia);
+		protected var _purchased:Signal=new Signal(Object, FotoliaMedia);
 		//
 		protected var _fetchedData:Boolean=false;
 		protected var _comp:Object;
 		protected var _downloadURL:String;
+		protected var _downloadExtension:String;
+		protected var _downloadName:String;
 		protected var _thumbnailURLs:Array=[];
 		protected var _purchaseLicenseName:String;
 		//
@@ -251,7 +253,7 @@ package net.tw.webapis.fotolia {
 		}
 		/**
 		 * Signal dispatched after a purchse call.
-		 * Listeners will receive 2 arguments: a String (the download URL) and the target FotoliaMedia.
+		 * Listeners will receive 2 arguments: an Object with 3 properties (url:String-the download URL, extension:String-the downloaded file's extension, name:String-the downloaded file's name) and the target FotoliaMedia.
 		 * @see #purchase()
 		 */
 		public function get purchased():Signal {
@@ -278,11 +280,19 @@ package net.tw.webapis.fotolia {
 		public function get purchaseLicenseName():String {
 			return _purchaseLicenseName;
 		}
-		protected function onPurchased(u:String, th:FotoliaMedia):void {
-			_downloadURL=u;
+		protected function onPurchased(o:Object, th:FotoliaMedia):void {
+			_downloadURL=o.url;
+			_downloadExtension=o.extension;
+			_downloadName=o.name;
 		}
 		public function get downloadURL():String {
 			return _downloadURL;
+		}
+		public function get downloadExtension():String {
+			return _downloadExtension;
+		}
+		public function get downloadName():String {
+			return _downloadName;
 		}
 		/**
 		 * Media's ID.
@@ -561,16 +571,16 @@ package net.tw.webapis.fotolia {
 		public function isVideo():Boolean {
 			return typeID==TYPE_VIDEO;
 		}
-		public function get extension():String {
+		/*public function get extension():String {
 			if (isPhoto() || isIllustration()) return 'jpg';
 			//if (isVector()) return 'xxx';
 			return 'xxx';
-		}
+		}*/
 		public function getLocalCompFileName():String {
-			return LOCAL_FILENAME_PREFIX+id+'.'+extension;
+			return LOCAL_FILENAME_PREFIX+id+'.jpg';
 		}
 		public function getLocalFileName(licenseName:String):String {
-			return LOCAL_FILENAME_PREFIX+id+LOCAL_FILENAME_SEPARATOR+licenseName+'.'+extension;
+			return LOCAL_FILENAME_PREFIX+id+LOCAL_FILENAME_SEPARATOR+licenseName+'.'+downloadExtension;
 		}
 		public function getPurchaseLocalFileName():String {
 			return getLocalFileName(purchaseLicenseName);
