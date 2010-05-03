@@ -57,11 +57,13 @@ package net.tw.webapis.fotolia {
 		public static const LICENSE_HD1080:String='HD1080';
 		//
 		public static const LICENSE_V:String='V';
-		public static const LICENSE_VX:String='VX';
+		public static const LICENSE_XV:String='XV';
 		//
 		public static const LICENSE_X:String='X';
 		//
 		public static const VIDEO_LICENSE_PREFIX:String='V_';
+		//
+		public static const SUBSCRIPTION_LICENSE_PREFIX:String='Subscription_';
 		//
 		public static const METHOD_GET_MEDIA_DATA:String='xmlrpc.getMediaData';
 		public static const METHOD_GET_MEDIA_GALLERIES:String='xmlrpc.getMediaGalleries';
@@ -503,6 +505,53 @@ package net.tw.webapis.fotolia {
 				a[i]=a[i].name;
 			}
 			return a;
+		}
+		protected static var licensesSizes:Array=[LICENSE_XS, LICENSE_S, LICENSE_M, LICENSE_L, LICENSE_XL, LICENSE_XXL, LICENSE_XXXL];
+		//protected static var vectorLicensesSizes:Array=[LICENSE_V, LICENSE_XV];
+		protected function filterSubscriptionLicenses(a:Array, premium:Boolean=false):Array {
+			var i:int;
+			var out:Array=[];
+			if (!premium) {
+				// When subscription_is_premium is false then only Subscription_L license is available (so only photos and illustrations)
+				if (hasLicense(LICENSE_L)) out=filterLicensesArray(a, LICENSE_L);
+			} else {
+				// When subscription_is_premium is true all subscription-enabled files are possible to use through the subscription
+				// but you have always to choose the biggest available size.
+				// So for example, a vector available is XS, S, M, L, XL, XXL and V can be used using a premium subscription with licenses Subscription_XXL
+				// (biggest illustration size available) and Subscription_V (biggest vector size available)
+				var ar:Array;
+				for (i=licensesSizes.length-1; i>=0; i--) {
+					 ar=filterLicensesArray(a, licensesSizes[i]);
+					 if (ar.length==1) {
+						 out.push(ar[0]);
+						 break;
+					 }
+				}
+				/*for (i=vectorLicensesSizes.length-1; i>=0; i--) {
+					ar=filterLicensesArray(a, vectorLicensesSizes[i]);
+					if (ar.length==1) {
+						out.push(ar[0]);
+						break;
+					}
+				}*/
+				ar=filterLicensesArray(a, LICENSE_V);
+				if (ar.length==1) out.push(ar[0]);
+			}
+			for (i=0; i<out.length; i++) {
+				/*if (out[i].name) out[i].name=SUBSCRIPTION_LICENSE_PREFIX+out[i].name;
+				if (out[i].license_name) out[i].license_name=SUBSCRIPTION_LICENSE_PREFIX+out[i].license_name;*/
+				out[i].subscriptionLicenseName=SUBSCRIPTION_LICENSE_PREFIX+out[i].license_name;
+			}
+			return out;
+		}
+		protected function filterLicensesArray(ar:Array, license:String):Array {
+			return ar.filter(function(item:*, index:int, array:Array):Boolean {return item.license_name==license;});
+		}
+		public function getSubscriptionLicensesArray(premium:Boolean=false):Array {
+			return filterSubscriptionLicenses(licensesArray, premium);
+		}
+		public function getSubscriptionLicensesDetailsArray(premium:Boolean=false):Array {
+			return filterSubscriptionLicenses(licensesDetailsArray, premium);
 		}
 		/**
 		 * Media's representative category, requires a getData() call.
