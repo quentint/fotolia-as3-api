@@ -19,8 +19,13 @@ package net.tw.webapis.fotolia {
 		public function get licenseName():String {
 			return _licenseName;
 		}
+		public function isSubscription():Boolean {
+			return licenseName.indexOf(FotoliaMedia.SUBSCRIPTION_LICENSE_PREFIX)==0;
+		}
 		public function get screenLicenseName():String {
-			return licenseName.substr(0, FotoliaMedia.VIDEO_LICENSE_PREFIX.length)==FotoliaMedia.VIDEO_LICENSE_PREFIX ? licenseName.substr(FotoliaMedia.VIDEO_LICENSE_PREFIX.length) : licenseName;
+			var ln:String=licenseName;
+			if (isSubscription()) ln=ln.replace(FotoliaMedia.SUBSCRIPTION_LICENSE_PREFIX, '');
+			return ln.substr(0, FotoliaMedia.VIDEO_LICENSE_PREFIX.length)==FotoliaMedia.VIDEO_LICENSE_PREFIX ? licenseName.substr(FotoliaMedia.VIDEO_LICENSE_PREFIX.length) : licenseName;
 		}
 		public function get media():FotoliaMedia {
 			return _media;
