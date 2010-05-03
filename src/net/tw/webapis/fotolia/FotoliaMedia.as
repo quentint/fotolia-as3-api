@@ -3,7 +3,6 @@ package net.tw.webapis.fotolia {
 	import flash.utils.Dictionary;
 	
 	import mx.rpc.events.FaultEvent;
-	import mx.utils.ObjectUtil;
 	
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
 	import net.tw.webapis.fotolia.util.DataParser;
@@ -370,6 +369,9 @@ package net.tw.webapis.fotolia {
 		public function get creatorName():String {
 			return props.creator_name;
 		}
+		public function get availableForSubscription():Boolean {
+			return props.available_for_subscription=="1";
+		}
 		/**
 		 * Media's available licenses, requires a getData call for a FotoliaCartMedia.
 		 * The Object has as many properties as available licenses for this media, their name will be the license name and their value will be the price of that license.
@@ -508,6 +510,7 @@ package net.tw.webapis.fotolia {
 		}
 		protected static var licensesSizes:Array=[LICENSE_XS, LICENSE_S, LICENSE_M, LICENSE_L, LICENSE_XL, LICENSE_XXL, LICENSE_XXXL];
 		//protected static var vectorLicensesSizes:Array=[LICENSE_V, LICENSE_XV];
+		protected static var videoLicensesSizes:Array=[LICENSE_NTSC, LICENSE_PAL, LICENSE_HD780, LICENSE_HD1080];
 		protected function filterSubscriptionLicenses(a:Array, premium:Boolean=false):Array {
 			var i:int;
 			var out:Array=[];
@@ -520,12 +523,26 @@ package net.tw.webapis.fotolia {
 				// So for example, a vector available is XS, S, M, L, XL, XXL and V can be used using a premium subscription with licenses Subscription_XXL
 				// (biggest illustration size available) and Subscription_V (biggest vector size available)
 				var ar:Array;
-				for (i=licensesSizes.length-1; i>=0; i--) {
-					 ar=filterLicensesArray(a, licensesSizes[i]);
-					 if (ar.length==1) {
-						 out.push(ar[0]);
-						 break;
-					 }
+				if (isVideo()) {
+					for (i=videoLicensesSizes.length-1; i>=0; i--) {
+						ar=filterLicensesArray(a, videoLicensesSizes[i]);
+						if (ar.length==1) {
+							out.push(ar[0]);
+							break;
+						}
+					}
+				} else {
+					for (i=licensesSizes.length-1; i>=0; i--) {
+						ar=filterLicensesArray(a, licensesSizes[i]);
+						if (ar.length==1) {
+							out.push(ar[0]);
+							break;
+						}
+					}
+				}
+				if (isVector()) {
+					ar=filterLicensesArray(a, LICENSE_V);
+					if (ar.length==1) out.push(ar[0]);
 				}
 				/*for (i=vectorLicensesSizes.length-1; i>=0; i--) {
 					ar=filterLicensesArray(a, vectorLicensesSizes[i]);
@@ -534,13 +551,11 @@ package net.tw.webapis.fotolia {
 						break;
 					}
 				}*/
-				ar=filterLicensesArray(a, LICENSE_V);
-				if (ar.length==1) out.push(ar[0]);
 			}
 			for (i=0; i<out.length; i++) {
 				/*if (out[i].name) out[i].name=SUBSCRIPTION_LICENSE_PREFIX+out[i].name;
 				if (out[i].license_name) out[i].license_name=SUBSCRIPTION_LICENSE_PREFIX+out[i].license_name;*/
-				out[i].subscriptionLicenseName=SUBSCRIPTION_LICENSE_PREFIX+out[i].license_name;
+				out[i].subscriptionLicenseName=SUBSCRIPTION_LICENSE_PREFIX+fixLicenseName(out[i].license_name);
 			}
 			return out;
 		}
