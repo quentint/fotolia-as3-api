@@ -66,6 +66,8 @@ package net.tw.webapis.fotolia {
 		public static const LANG_ITALIAN:uint=6;
 		public static const LANG_PORTUGUESE_PT:uint=7;
 		public static const LANG_PORTUGUESE_BR:uint=8;
+		public static const LANG_JAPANESE:uint=9;
+		public static const LANG_POLISH:uint=11;
 		/**
 		 * Default language ID used for all language-dependent methods.
 		 */
@@ -422,7 +424,9 @@ package net.tw.webapis.fotolia {
 				{label:'Español',		id:LANG_SPANISH},
 				{label:'Italiano',		id:LANG_ITALIAN},
 				{label:'Português PT',	id:LANG_PORTUGUESE_PT},
-				{label:'Português BR',	id:LANG_PORTUGUESE_BR}
+				{label:'Português BR',	id:LANG_PORTUGUESE_BR},
+				{label:'日本語',			id:LANG_JAPANESE},
+				{label:'Język polski',	id:LANG_POLISH}
 			]);
 		}
 	}

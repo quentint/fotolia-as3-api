@@ -514,6 +514,7 @@ package net.tw.webapis.fotolia {
 		protected function filterSubscriptionLicenses(a:Array, premium:Boolean=false):Array {
 			var i:int;
 			var out:Array=[];
+			if (!availableForSubscription) return out;
 			if (!premium) {
 				// When subscription_is_premium is false then only Subscription_L license is available (so only photos and illustrations)
 				if (hasLicense(LICENSE_L)) out=filterLicensesArray(a, LICENSE_L);

@@ -35,6 +35,7 @@ package net.tw.webapis.fotolia {
 		}
 		public function get searchParams():Object {
 			var o:Object={};
+			if (langID) o.language_id=langID;
 			if (words)	o.words=words;
 			if (offset)	o.offset=offset;
 			if (limit)	o.limit=Math.min(limit, FotoliaService.SEARCH_MAX_LIMIT);
