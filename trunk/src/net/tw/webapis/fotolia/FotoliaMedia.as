@@ -3,6 +3,7 @@ package net.tw.webapis.fotolia {
 	import flash.utils.Dictionary;
 	
 	import mx.rpc.events.FaultEvent;
+	import mx.utils.ObjectUtil;
 	
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
 	import net.tw.webapis.fotolia.util.DataParser;
@@ -523,7 +524,7 @@ package net.tw.webapis.fotolia {
 				// but you have always to choose the biggest available size.
 				// So for example, a vector available is XS, S, M, L, XL, XXL and V can be used using a premium subscription with licenses Subscription_XXL
 				// (biggest illustration size available) and Subscription_V (biggest vector size available)
-				var ar:Array;
+				var ar:Array=[];
 				if (isVideo()) {
 					for (i=videoLicensesSizes.length-1; i>=0; i--) {
 						ar=filterLicensesArray(a, videoLicensesSizes[i]);
@@ -553,10 +554,12 @@ package net.tw.webapis.fotolia {
 					}
 				}*/
 			}
+			var o:Object;
 			for (i=0; i<out.length; i++) {
-				/*if (out[i].name) out[i].name=SUBSCRIPTION_LICENSE_PREFIX+out[i].name;
-				if (out[i].license_name) out[i].license_name=SUBSCRIPTION_LICENSE_PREFIX+out[i].license_name;*/
-				out[i].subscriptionLicenseName=SUBSCRIPTION_LICENSE_PREFIX+fixLicenseName(out[i].license_name);
+				o=ObjectUtil.clone(out[i]);
+				o.subscriptionLicenseName=SUBSCRIPTION_LICENSE_PREFIX+fixLicenseName(out[i].license_name);
+				o.nbCredits=0;
+				out[i]=o;
 			}
 			return out;
 		}

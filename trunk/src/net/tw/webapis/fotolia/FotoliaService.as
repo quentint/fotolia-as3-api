@@ -1,10 +1,12 @@
 package net.tw.webapis.fotolia {
+	import mx.collections.ArrayCollection;
 	import mx.rpc.events.FaultEvent;
 	import mx.utils.ObjectUtil;
-	import net.tw.webapis.fotolia.util.DataParser;
-	import org.osflash.signals.*;
+	
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
-	import mx.collections.ArrayCollection;
+	import net.tw.webapis.fotolia.util.DataParser;
+	
+	import org.osflash.signals.*;
 
 	/**
 	 * Main class of the API, provides access to every features.
@@ -35,7 +37,6 @@ package net.tw.webapis.fotolia {
 		protected var _conceptualCategories:Array;
 		//
 		public static const BASE_URL:String='http://www.fotolia.com/';
-		public static const SIGN_UP_URL:String=BASE_URL+'Member/SignUp';
 		//
 		public static const METHOD_TEST:String='xmlrpc.test';
 		public static const METHOD_GET_DATA:String='xmlrpc.getData';
@@ -68,6 +69,9 @@ package net.tw.webapis.fotolia {
 		public static const LANG_PORTUGUESE_BR:uint=8;
 		public static const LANG_JAPANESE:uint=9;
 		public static const LANG_POLISH:uint=11;
+		public static const LANG_RUSSIAN:uint=12;
+		public static const LANG_CHINESE:uint=13;
+		public static const LANG_TURKISH:uint=14;
 		/**
 		 * Default language ID used for all language-dependent methods.
 		 */
@@ -415,18 +419,27 @@ package net.tw.webapis.fotolia {
 				[this, login, pass]
 			);
 		}
+		public static function getLangBaseURL(langCode:String):String {
+			return BASE_URL.replace('www', langCode);
+		}
+		public static function getLangSignUpURL(langCode:String):String {
+			return getLangBaseURL(langCode)+'Member/SignUp';
+		}
 		public static function get languages():ArrayCollection {
 			return new ArrayCollection([
-				{label:'Français',		id:LANG_FRENCH},
-				{label:'English US',	id:LANG_ENGLISH_US},
-				{label:'English UK',	id:LANG_ENGLISH_UK},
-				{label:'Deutsch',		id:LANG_GERMAN},
-				{label:'Español',		id:LANG_SPANISH},
-				{label:'Italiano',		id:LANG_ITALIAN},
-				{label:'Português PT',	id:LANG_PORTUGUESE_PT},
-				{label:'Português BR',	id:LANG_PORTUGUESE_BR},
-				{label:'日本語',			id:LANG_JAPANESE},
-				{label:'Język polski',	id:LANG_POLISH}
+				{label:'Français',		id:LANG_FRENCH,			code:'fr'},
+				{label:'English US',	id:LANG_ENGLISH_US,		code:'us'},
+				{label:'English UK',	id:LANG_ENGLISH_UK,		code:'en'},
+				{label:'Deutsch',		id:LANG_GERMAN,			code:'de'},
+				{label:'Español',		id:LANG_SPANISH,		code:'es'},
+				{label:'Italiano',		id:LANG_ITALIAN,		code:'it'},
+				{label:'Português PT',	id:LANG_PORTUGUESE_PT,	code:'pt'},
+				{label:'Português BR',	id:LANG_PORTUGUESE_BR,	code:'br'},
+				{label:'日本語',			id:LANG_JAPANESE,		code:'jp'},
+				{label:'Język polski',	id:LANG_POLISH,			code:'pl'},
+				{label:'Россия',		id:LANG_RUSSIAN,		code:'ru'},
+				{label:'中文',			id:LANG_CHINESE,		code:'cn'},
+				{label:'Türkçe',		id:LANG_TURKISH,		code:'tr'}
 			]);
 		}
 	}
