@@ -427,19 +427,19 @@ package net.tw.webapis.fotolia {
 		}
 		public static function get languages():ArrayCollection {
 			return new ArrayCollection([
-				{label:'Français',		id:LANG_FRENCH,			code:'fr'},
-				{label:'English US',	id:LANG_ENGLISH_US,		code:'us'},
-				{label:'English UK',	id:LANG_ENGLISH_UK,		code:'en'},
-				{label:'Deutsch',		id:LANG_GERMAN,			code:'de'},
-				{label:'Español',		id:LANG_SPANISH,		code:'es'},
-				{label:'Italiano',		id:LANG_ITALIAN,		code:'it'},
-				{label:'Português PT',	id:LANG_PORTUGUESE_PT,	code:'pt'},
-				{label:'Português BR',	id:LANG_PORTUGUESE_BR,	code:'br'},
-				{label:'日本語',			id:LANG_JAPANESE,		code:'jp'},
-				{label:'Język polski',	id:LANG_POLISH,			code:'pl'},
-				{label:'Россия',		id:LANG_RUSSIAN,		code:'ru'},
-				{label:'中文',			id:LANG_CHINESE,		code:'cn'},
-				{label:'Türkçe',		id:LANG_TURKISH,		code:'tr'}
+				{label:'Français',		id:LANG_FRENCH,			code:'fr',	locale:'fr_FR'},
+				{label:'English US',	id:LANG_ENGLISH_US,		code:'us',	locale:'en_US'},
+				{label:'English UK',	id:LANG_ENGLISH_UK,		code:'en',	locale:'en_GB'},
+				{label:'Deutsch',		id:LANG_GERMAN,			code:'de',	locale:'de_DE'},
+				{label:'Español',		id:LANG_SPANISH,		code:'es',	locale:'es_ES'},
+				{label:'Italiano',		id:LANG_ITALIAN,		code:'it',	locale:'it_IT'},
+				{label:'Português PT',	id:LANG_PORTUGUESE_PT,	code:'pt',	locale:'pt_PT'},
+				{label:'Português BR',	id:LANG_PORTUGUESE_BR,	code:'br',	locale:'pt_BR'},
+				{label:'日本語',			id:LANG_JAPANESE,		code:'jp',	locale:'ja_JP'},
+				{label:'Język polski',	id:LANG_POLISH,			code:'pl',	locale:'pl_PL'},
+				{label:'Россия',		id:LANG_RUSSIAN,		code:'ru',	locale:'ru_RU'},
+				{label:'中文',			id:LANG_CHINESE,		code:'cn',	locale:'zh_CN'},
+				{label:'Türkçe',		id:LANG_TURKISH,		code:'tr',	locale:'tr_TR'}
 			]);
 		}
 	}
