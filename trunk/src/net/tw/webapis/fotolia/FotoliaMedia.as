@@ -653,13 +653,18 @@ package net.tw.webapis.fotolia {
 		public function getPurchaseLocalFileName():String {
 			return getLocalFileName(purchaseLicenseName);
 		}
-		public static function fileNameMatchesLocalMedia(s:String):Boolean {
-			return extractMediaIDFromLocalMedia(s)!=0;
+		public static function fileNameMatchesLocalMedia(s:String, ignoreCase:Boolean=true):Boolean {
+			return extractMediaIDFromLocalMedia(s, ignoreCase)!=0;
 		}
-		public static function extractMediaIDFromLocalMedia(s:String):uint {
-			if (s.indexOf(LOCAL_FILENAME_PREFIX)!=0) return 0;
+		public static function extractMediaIDFromLocalMedia(s:String, ignoreCase:Boolean=true):uint {
+			var lfp:String=LOCAL_FILENAME_PREFIX;
+			if (ignoreCase) {
+				s=s.toLowerCase();
+				lfp=lfp.toLowerCase();
+			}
+			if (s.indexOf(lfp)!=0) return 0;
 			var fn:String=s.split('.')[0];
-			var parts:Array=fn.replace(LOCAL_FILENAME_PREFIX, '').split(LOCAL_FILENAME_SEPARATOR);
+			var parts:Array=fn.replace(lfp, '').split(LOCAL_FILENAME_SEPARATOR);
 			var matches:Array=String(parts[0]).match(/^[0-9]+$/);
 			if (!matches) return 0;
 			return uint(matches[0]);
