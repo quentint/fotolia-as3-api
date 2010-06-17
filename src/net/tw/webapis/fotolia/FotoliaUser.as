@@ -207,7 +207,7 @@ package net.tw.webapis.fotolia {
 		 * @see #getStats()
 		 */
 		public function get subscriptionIsPremium():* {
-			return props.subscription_is_premium;
+			return hasSubscription && props.subscription_is_premium;
 		}
 		/**
 		 * User's shopping cart.
