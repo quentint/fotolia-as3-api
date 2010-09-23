@@ -146,11 +146,11 @@ package net.tw.webapis.fotolia {
 		 * @see		http://us.fotolia.com/Services/API/Method/getUserGalleryMedias
 		 */
 		public function getMedias(pageIndex:uint=0, nbPerPage:uint=32, thumbnailSize:uint=110, detailLevel:uint=0):void {
-			nbPerPage--;//Bug API!
+			//nbPerPage--;//Bug API!
 			//trace((pageIndex-1)/**nbPerPage*/, nbPerPage);
 			loadRequest(
 				FotoliaUserGallery.METHOD_GET_USER_GALLERY_MEDIAS,
-				[key, user.sessionID, (pageIndex-1)*nbPerPage, nbPerPage, thumbnailSize, id, detailLevel],
+				[key, user.sessionID, (pageIndex-1)*nbPerPage, nbPerPage-1, thumbnailSize, id, detailLevel],
 				gotMedias,
 				DataParser.objectToSearchResults,
 				[_service]
