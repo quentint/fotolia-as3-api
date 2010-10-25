@@ -14,7 +14,7 @@ package net.tw.webapis.fotolia {
 		 * Total number of search results.
 		 */
 		public function get nbResults():uint {
-			return _nbResults;
+			return _nbResults ? _nbResults : (medias ? medias.length : 0);
 		}
 		/**
 		 * Found medias. This Array only contains FotoliaMedia objects.
