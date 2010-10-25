@@ -1,7 +1,6 @@
 package net.tw.webapis.fotolia {
 	import mx.collections.ArrayCollection;
 	import mx.rpc.events.FaultEvent;
-	import mx.utils.ObjectUtil;
 	
 	import net.tw.webapis.fotolia.abstract.FotoliaServiceRequester;
 	import net.tw.webapis.fotolia.util.DataParser;
@@ -22,6 +21,8 @@ package net.tw.webapis.fotolia {
 		protected var _gotGalleries:Signal=new Signal(Array);
 		protected var _gotCategories:Signal=new Signal(Array);
 		protected var _searched:Signal=new Signal(FotoliaSearchResults);
+		protected var _gotTopSales:Signal=new Signal(FotoliaSearchResults);
+		protected var _gotFreeFilesOfTheDay:Signal=new Signal(FotoliaSearchResults);
 		protected var _loggedInUser:Signal=new Signal(FotoliaUser);
 		protected var _gotTags:Signal=new Signal(Array);
 		protected var _gotCountries:Signal=new Signal(Array);
@@ -44,6 +45,8 @@ package net.tw.webapis.fotolia {
 		public static const METHOD_GET_GALLERIES:String='xmlrpc.getGalleries';
 		public static const METHOD_LOGIN_USER:String='xmlrpc.loginUser';
 		public static const METHOD_GET_SEARCH_RESULTS:String='xmlrpc.getSearchResults';
+		public static const METHOD_GET_TOP_SALES:String='search.getTopSales';
+		public static const METHOD_GET_FREE_FILES_OF_THE_DAY:String='search.getFreeFilesOfTheDay';
 		public static const METHOD_GET_TAGS:String='xmlrpc.getTags';
 		public static const METHOD_GET_COUNTRIES:String='xmlrpc.getCountries';
 		//
@@ -331,6 +334,49 @@ package net.tw.webapis.fotolia {
 		public function get lastResults():FotoliaSearchResults {
 			return _lastResults;
 		}
+		
+		
+		
+		
+		public function get gotTopSales():Signal {
+			return _gotTopSales;
+		}
+		public function getTopSales(query:FotoliaTopSalesQuery):void {
+			loadRequest(
+				METHOD_GET_TOP_SALES,
+				[key,
+					query.period,
+					FotoliaMedia.fixThumbnailSize(query.thumbnailSize),
+					autoPickLang(query.langID),
+					query.details ? 1 : 0,
+					Math.max(0, query.offset),
+					Math.min(query.limit, FotoliaService.SEARCH_MAX_LIMIT)
+				],
+				gotTopSales,
+				DataParser.objectToSearchResults,
+				[this]
+			);
+		}
+		//
+		public function get gotFreeFilesOfTheDay():Signal {
+			return _gotFreeFilesOfTheDay;
+		}
+		public function getFreeFilesOfTheDay(query:FotoliaFreeFilesQuery):void {
+			loadRequest(
+				METHOD_GET_FREE_FILES_OF_THE_DAY,
+				[key,
+					FotoliaMedia.fixThumbnailSize(query.thumbnailSize),
+					autoPickLang(query.langID),
+					query.details ? 1 : 0,
+					Math.max(0, query.offset),
+					Math.min(query.limit, FotoliaService.SEARCH_MAX_LIMIT)
+				],
+				gotTopSales,
+				DataParser.objectToSearchResults,
+				[this]
+			);
+		}
+		//
 		/**
 		 * Signal dispatched after a getTags call.
 		 * Listeners will receive 1 argument: an Array of Objects

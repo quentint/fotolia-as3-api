@@ -22,12 +22,8 @@ package net.tw.webapis.fotolia {
 		public var thumbnailSize:uint=FotoliaMedia.THUMBNAIL_SIZE_MEDIUM;
 		public var details:Boolean;
 		//
-		//public var representativeCategoryID:uint;
-		//public var conceptualCategoryID:uint;
 		public var category:FotoliaCategory;
-		//
 		public var gallery:FotoliaGallery;
-		//
 		public var creatorID:uint;
 		//
 		public function FotoliaSearchQuery(pWords:String=null) {
@@ -66,12 +62,8 @@ package net.tw.webapis.fotolia {
 			if (category) {
 				if (category.isRepresentative()) o.cat1_id=category.id;
 				else o.cat2_id=category.id;
-			}/* else {
-				if (representativeCategoryID)	o.cat1_id=representativeCategoryID;
-				if (conceptualCategoryID)		o.cat2_id=conceptualCategoryID;
-			}*/
+			}
 			if (gallery)					o.gallery_id=gallery.id;
-			//
 			if (creatorID)					o.creator_id=creatorID;
 			//
 			return o;
