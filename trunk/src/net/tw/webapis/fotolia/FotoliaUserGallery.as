@@ -1,7 +1,8 @@
 package net.tw.webapis.fotolia {
 	import net.tw.webapis.fotolia.abstract.AbstractFotoliaGallery;
-	import org.osflash.signals.Signal;
 	import net.tw.webapis.fotolia.util.DataParser;
+	
+	import org.osflash.signals.Signal;
 	/**
 	 * Represents a private (user) Fotolia gallery.
 	 */
@@ -11,11 +12,15 @@ package net.tw.webapis.fotolia {
 		protected var _disposed:Signal=new Signal(FotoliaUserGallery);
 		protected var _addedMedia:Signal=new Signal(FotoliaUserGallery);
 		protected var _removedMedia:Signal=new Signal(FotoliaUserGallery);
+		protected var _renamed:Signal=new Signal(FotoliaUserGallery);
+		//
+		protected var _pendingName:String;
 		//
 		public static const METHOD_DELETE_USER_GALLERY:String='xmlrpc.deleteUserGallery';
 		public static const METHOD_ADD_TO_USER_GALLERY:String='xmlrpc.addToUserGallery';
 		public static const METHOD_REMOVE_FROM_USER_GALLERY:String='xmlrpc.removeFromUserGallery';
 		public static const METHOD_GET_USER_GALLERY_MEDIAS:String='xmlrpc.getUserGalleryMedias';
+		public static const METHOD_RENAME_USER_GALLERY:String='xmlrpc.renameUserGallery';
 		//
 		public static const TO_MODERATE_GALLERY_NAME:String='To moderate';
 		/**
@@ -26,6 +31,7 @@ package net.tw.webapis.fotolia {
 		public function FotoliaUserGallery(pService:FotoliaService, props:Object, pUser:FotoliaUser) {
 			super(pService, props);
 			_user=pUser;
+			renamed.add(onRename);
 		}
 		/**
 		 * Owner of the gallery.
@@ -146,8 +152,6 @@ package net.tw.webapis.fotolia {
 		 * @see		http://us.fotolia.com/Services/API/Method/getUserGalleryMedias
 		 */
 		public function getMedias(pageIndex:uint=0, nbPerPage:uint=32, thumbnailSize:uint=110, detailLevel:uint=0):void {
-			//nbPerPage--;//Bug API!
-			//trace((pageIndex-1)/**nbPerPage*/, nbPerPage);
 			loadRequest(
 				FotoliaUserGallery.METHOD_GET_USER_GALLERY_MEDIAS,
 				[key, user.sessionID, (pageIndex-1)*nbPerPage, nbPerPage-1, thumbnailSize, id, detailLevel],
@@ -155,6 +159,31 @@ package net.tw.webapis.fotolia {
 				DataParser.objectToSearchResults,
 				[_service]
 			);
+		}
+		/**
+		 * Remote renameUserGallery call.
+		 * @param	newName
+		 */
+		public function rename(newName:String):void {
+			_pendingName=newName;
+			loadRequest(
+				METHOD_RENAME_USER_GALLERY,
+				[key, user.sessionID, id, newName],
+				renamed,
+				DataParser.targetHandler,
+				[this]
+			);
+		}
+		/**
+		 * Signal dispatched after a removeMedia call.
+		 * Listeners will receive 1 argument: the target FotoliaUserGallery.
+		 * @see #removeMedia()
+		 */
+		public function get renamed():Signal {
+			return _renamed;
+		}
+		protected function onRename(ug:FotoliaUserGallery):void {
+			props.name=_pendingName;
 		}
 	}
 }
