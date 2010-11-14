@@ -25,6 +25,9 @@ package net.tw.webapis.fotolia {
 		public var category:FotoliaCategory;
 		public var gallery:FotoliaGallery;
 		public var creatorID:uint;
+		public var serieID:uint;
+		public var similiaID:uint;
+		public var modelID:uint;
 		//
 		public function FotoliaSearchQuery(pWords:String=null) {
 			words=pWords;
@@ -65,6 +68,9 @@ package net.tw.webapis.fotolia {
 			}
 			if (gallery)					o.gallery_id=gallery.id;
 			if (creatorID)					o.creator_id=creatorID;
+			if (serieID)					o.serie_id=serieID;
+			if (similiaID)					o.similia_id=similiaID;
+			if (modelID)					o.model_id=modelID;
 			//
 			return o;
 		}
