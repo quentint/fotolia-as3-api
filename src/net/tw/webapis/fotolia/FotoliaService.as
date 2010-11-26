@@ -75,6 +75,7 @@ package net.tw.webapis.fotolia {
 		public static const LANG_RUSSIAN:uint=12;
 		public static const LANG_CHINESE:uint=13;
 		public static const LANG_TURKISH:uint=14;
+		public static const LANG_KOREAN:uint=15;
 		/**
 		 * Default language ID used for all language-dependent methods.
 		 */
@@ -485,7 +486,8 @@ package net.tw.webapis.fotolia {
 				{label:'Język polski',	id:LANG_POLISH,			code:'pl',	locale:'pl_PL'},
 				{label:'Россия',		id:LANG_RUSSIAN,		code:'ru',	locale:'ru_RU'},
 				{label:'中文',			id:LANG_CHINESE,		code:'cn',	locale:'zh_CN'},
-				{label:'Türkçe',		id:LANG_TURKISH,		code:'tr',	locale:'tr_TR'}
+				{label:'Türkçe',		id:LANG_TURKISH,		code:'tr',	locale:'tr_TR'},
+				{label:'한국어',		id:LANG_KOREAN,			code:'ko',	locale:'ko_KR'}
 			]);
 		}
 	}
